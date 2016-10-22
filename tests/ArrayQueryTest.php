@@ -242,6 +242,30 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testOrLt()
+    {
+        $this->assertTrue(
+            $this->query()
+                ->eq('id', 1)
+                ->orLt('created_at', '0000-01-01')
+                ->exists()
+        );
+
+        $this->assertFalse(
+            $this->query()
+                ->eq('id', -1)
+                ->orLt('created_at', '0000-01-01')
+                ->exists()
+        );
+
+        $this->assertTrue(
+            $this->query()
+                ->eq('id', 9999)
+                ->orLt('created_at', '9999-01-01')
+                ->exists()
+        );
+    }
+
     public function testLike()
     {
         $len = $this->query()
