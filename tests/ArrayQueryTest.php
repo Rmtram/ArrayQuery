@@ -122,6 +122,40 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(), $actual);
     }
 
+    public function testEq()
+    {
+        $this->assertTrue(
+            $this->query()
+                ->eq('id', 1)
+                ->eq('created_at', '2016-10-10')
+                ->exists()
+        );
+
+        $this->assertFalse(
+            $this->query()
+                ->eq('id', 2)
+                ->eq('created_at', '2016-10-10')
+                ->exists()
+        );
+    }
+
+    public function testOrEq()
+    {
+        $this->assertTrue(
+          $this->query()
+            ->eq('id', 1)
+            ->orEq('profile.name', 'unknown2')
+            ->exists()
+        );
+
+        $this->assertFalse(
+            $this->query()
+                ->orEq('id', -1)
+                ->orEq('id', -2)
+                ->exists()
+        );
+    }
+
     public function testLike()
     {
         $len = $this->query()

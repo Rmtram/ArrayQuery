@@ -11,7 +11,8 @@ return  array(
                 'name' => 'unknown2',
                 'age'  => 18
             )
-        )
+        ),
+        'created_at' => '2016-10-10'
     ),
     array(
         'id' => 2,
@@ -23,13 +24,15 @@ return  array(
                 'name' => 'unknown3',
                 'age'  => 18
             )
-        )
+        ),
+        'created_at' => '2016-10-12'
     ),
     array(
         'id' => 3,
         'profile' => array(
             'name' => 'unknown3',
             'age' => 18
-        )
+        ),
+        'created_at' => '2016-10-13'
     )
 );
