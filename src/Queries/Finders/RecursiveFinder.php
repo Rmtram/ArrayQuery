@@ -50,13 +50,13 @@ class RecursiveFinder implements FinderInterface
         }
 
         if (false === strpos($key, $this->delimiter)) {
-            return $this->retrieve($key, $item);
+            return $this->pick($key, $item);
         }
 
         $keys = explode($this->delimiter, $key);
 
         foreach ($keys as $k) {
-            if (null === $item = $this->retrieve($k, $item)) {
+            if (null === $item = $this->pick($k, $item)) {
                 return $item;
             }
         }
@@ -69,7 +69,7 @@ class RecursiveFinder implements FinderInterface
      * @param $item
      * @return mixed
      */
-    private function retrieve($key, $item)
+    private function pick($key, $item)
     {
         return isset($item[$key]) ? $item[$key] : null;
     }
