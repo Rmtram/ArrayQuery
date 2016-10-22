@@ -22,6 +22,12 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->fixtures['users'], $this->query()->all());
     }
 
+    public function testAllWithOrder()
+    {
+        $actual = $this->query()->order('id', 'desc')->all();
+        $this->assertEquals(3, $actual[0]['id']);
+    }
+
     public function testAllToEmptyResult()
     {
         $actual = $this->query()->eq('id', -1)->all();
@@ -33,6 +39,13 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
         $actual = $this->query()->first();
         $this->assertEquals($this->fixtures['users'][0], $actual);
     }
+
+    public function testFirstWithOrder()
+    {
+        $actual = $this->query()->order('id', 'desc')->first();
+        $this->assertEquals(3, $actual['id']);
+    }
+
 
     public function testFirstToEmptyResult()
     {
@@ -59,6 +72,17 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->fixtures['users'], $actual);
     }
 
+    public function testEachWithOrder()
+    {
+        $actual = array();
+        $this->query()
+            ->order('id', 'desc')
+            ->each(function($row) use(&$actual) {
+                $actual[] = $row;
+            });
+        $this->assertEquals(3, $actual[0]['id']);
+    }
+
     public function testEachWithEmpty()
     {
         $actual = array();
@@ -76,6 +100,16 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
             return $row;
         });
         $this->assertEquals($this->fixtures['users'], $actual);
+    }
+
+    public function testMapWithOrder()
+    {
+        $actual = $this->query()
+            ->order('id', 'desc')
+            ->map(function($row)  {
+                return $row;
+            });
+        $this->assertEquals(3, $actual[0]['id']);
     }
 
     public function testMapWithEmpty()
