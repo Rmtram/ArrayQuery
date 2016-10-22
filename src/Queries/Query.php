@@ -151,6 +151,7 @@ class Query
      */
     protected function walk(array $items, callable $callable)
     {
+        $evaluatePassed = false;
         foreach ($items as $item) {
             $bool = true;
             foreach ($this->where as $where) {
@@ -161,8 +162,11 @@ class Query
                         $bool = true;
                         break;
                     }
+                    $evaluatePassed = true;
                 } else {
-                    $bool = false;
+                    if (!(self::COMPARE_OR === $compare && $evaluatePassed)) {
+                        $bool = false;
+                    }
                 }
             }
             if (true === $bool) {
