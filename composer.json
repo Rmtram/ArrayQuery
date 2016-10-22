@@ -1,0 +1,43 @@
+{
+  "name": "rmtram/simple-text-db",
+  "type": "library",
+  "description": "Simple text file based database and database mapper.",
+  "keywords": [
+    "text database",
+    "text db",
+    "text database mapper",
+    "TextDatabase",
+    "text kvs"
+  ],
+  "homepage": "https://github.com/Rmtram/SimpleTextDb",
+  "support": {
+    "issues": "https://github.com/Rmtram/SimpleTextDb/issues",
+    "source": "https://github.com/Rmtram/SimpleTextDb"
+  },
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Rmtram",
+      "email": "rmtram95@gmail.com"
+    }
+  ],
+  "require-dev": {
+    "phpunit/phpunit": "~4.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Rmtram\\ArrayQuery\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Rmtram\\ArrayQuery\\TestCase\\": "tests/"
+    },
+    "classmap": [
+      "tests/"
+    ]
+  },
+  "require": {
+    "rmtram/sorter": "~1.0"
+  }
+}

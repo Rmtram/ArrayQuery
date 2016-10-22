@@ -1,15 +1,17 @@
 <?php
 
-namespace Rmtram\ArrayQuery\Query;
+namespace Rmtram\ArrayQuery\Queries;
 
 use Rmtram\ArrayQuery\Exceptions\InvalidArgumentException;
 use Rmtram\ArrayQuery\Exceptions\NotOperatorClassException;
 use Rmtram\ArrayQuery\Exceptions\UndefinedOperatorClassException;
-use Rmtram\ArrayQuery\Query\Operator\OperatorInterface;
+use Rmtram\ArrayQuery\Queries\Finders\FinderInterface;
+use Rmtram\ArrayQuery\Queries\Finders\RecursiveFinder;
+use Rmtram\ArrayQuery\Queries\Operators\OperatorInterface;
 
 /**
  * Class Where
- * @package Rmtram\ArrayQuery\Query
+ * @package Rmtram\ArrayQuery\Queries
  * @method $this eq(string $key, mixed $val)
  * @method $this orEq(string $key, mixed $val)
  * @method $this notEq(string $key, mixed $val)
@@ -27,7 +29,7 @@ use Rmtram\ArrayQuery\Query\Operator\OperatorInterface;
  * @method $this notLike(string $key, string $val)
  * @method $this orNotLike(string $key, string $val)
  */
-class Where
+class Query
 {
 
     const OPERATOR_EQUAL                 = 0;
@@ -50,24 +52,32 @@ class Where
 
     const COMPARE_OR  = 1;
 
-    /**
-     * @var array
-     */
-    private $operators = array(
-        self::OPERATOR_EQUAL                 => 'Rmtram\ArrayQuery\Query\Operator\Equal',
-        self::OPERATOR_NOT_EQUAL             => 'Rmtram\ArrayQuery\Query\Operator\NotEqual',
-        self::OPERATOR_LIKE                  => 'Rmtram\ArrayQuery\Query\Operator\Like',
-        self::OPERATOR_NOT_LIKE              => 'Rmtram\ArrayQuery\Query\Operator\NotLike',
-        self::OPERATOR_LESS_THAN             => 'Rmtram\ArrayQuery\Query\Operator\LessThan',
-        self::OPERATOR_LESS_THAN_OR_EQUAL    => 'Rmtram\ArrayQuery\Query\Operator\LessThanOrEqual',
-        self::OPERATOR_GREATER_THAN          => 'Rmtram\ArrayQuery\Query\Operator\GreaterThan',
-        self::OPERATOR_GREATER_THAN_OR_EQUAL => 'Rmtram\ArrayQuery\Query\Operator\GreaterThanOrEqual'
-    );
+    const DEFAULT_DELIMITER = '.';
+
 
     /**
      * @var array
      */
-    private $where = array();
+    protected $where = array();
+
+    /**
+     * @var FinderInterface
+     */
+    protected $finder;
+
+    /**
+     * @var array
+     */
+    private $operators = array(
+        self::OPERATOR_EQUAL                 => 'Rmtram\ArrayQuery\Queries\Operators\Equal',
+        self::OPERATOR_NOT_EQUAL             => 'Rmtram\ArrayQuery\Queries\Operators\NotEqual',
+        self::OPERATOR_LIKE                  => 'Rmtram\ArrayQuery\Queries\Operators\Like',
+        self::OPERATOR_NOT_LIKE              => 'Rmtram\ArrayQuery\Queries\Operators\NotLike',
+        self::OPERATOR_LESS_THAN             => 'Rmtram\ArrayQuery\Queries\Operators\LessThan',
+        self::OPERATOR_LESS_THAN_OR_EQUAL    => 'Rmtram\ArrayQuery\Queries\Operators\LessThanOrEqual',
+        self::OPERATOR_GREATER_THAN          => 'Rmtram\ArrayQuery\Queries\Operators\GreaterThan',
+        self::OPERATOR_GREATER_THAN_OR_EQUAL => 'Rmtram\ArrayQuery\Queries\Operators\GreaterThanOrEqual'
+    );
 
     /**
      * @var array
@@ -91,12 +101,23 @@ class Where
         'orNotLike' => array(self::OPERATOR_NOT_LIKE,              self::COMPARE_OR)
     );
 
-
-    public function chain(callable $callable)
+    /**
+     * constructor.
+     */
+    public function __construct()
     {
-        $static = new static();
-        $callable($static);
-        $this->where[] = $static->where;
+        $this->finder = new RecursiveFinder(self::DEFAULT_DELIMITER);
+    }
+
+    /**
+     * @param $delimiter
+     * @return $this
+     * @throws InvalidArgumentException
+     */
+    public function delimiter($delimiter)
+    {
+        $this->finder->delimiter($delimiter);
+        return $this;
     }
 
     /**
@@ -110,12 +131,12 @@ class Where
         $count = count($args);
         if ($count !== 2) {
             throw new InvalidArgumentException(sprintf(
-                'expects at most 2 parameters, %d given',
+                'expects at 2 parameters, %d given',
                 $count
             ));
         }
         if (!isset($this->methods[$callName])) {
-            throw new \BadMethodCallException('undefined method in ' . $callName);
+            throw new \BadMethodCallException('undefined method at ' . $callName);
         }
         $method = $this->methods[$callName];
         $this->where[] = array($args[0], $args[1], $method[0], $method[1]);
@@ -123,19 +144,19 @@ class Where
     }
 
     /**
+     * @param array $items
      * @param callable $callable
      * @throws NotOperatorClassException
      * @throws UndefinedOperatorClassException
      */
-    private function call(callable $callable)
+    protected function walk(array $items, callable $callable)
     {
-        $rows = $this->items;
-        foreach ($rows as $index => $row) {
+        foreach ($items as $item) {
             $bool = true;
             foreach ($this->where as $where) {
                 $operator = $this->getOperator($where[2]);
                 $compare = $where[3];
-                if ($operator->evaluate($where[0], $where[1], $row)) {
+                if ($operator->evaluate($where[0], $where[1], $item)) {
                     if (self::COMPARE_OR === $compare) {
                         $bool = true;
                         break;
@@ -145,7 +166,7 @@ class Where
                 }
             }
             if (true === $bool) {
-                $callable($index, $row);
+                $callable($item);
             }
         }
     }
@@ -164,7 +185,7 @@ class Where
         $operator = $this->operators[$operatorNumber];
         if (!$operator instanceof OperatorInterface) {
             $operatorClassName = $operator;
-            $operator = new $operator();
+            $operator = new $operator($this->finder);
             if (!$operator instanceof OperatorInterface) {
                 throw new NotOperatorClassException($operatorClassName);
             }

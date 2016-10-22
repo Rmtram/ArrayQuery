@@ -1,10 +1,10 @@
 <?php
 
-namespace Rmtram\ArrayQuery\Query\Operator;
+namespace Rmtram\ArrayQuery\Queries\Operators;
 
 /**
  * Class NotLike
- * @package Rmtram\ArrayQuery\Query\Operator
+ * @package Rmtram\ArrayQuery\Queries\Operators
  */
 class NotLike extends AbstractLike
 {
@@ -16,9 +16,10 @@ class NotLike extends AbstractLike
      */
     public function evaluate($key, $val, $row)
     {
-        if (!$this->exists($key, $row)) {
+        $expected = $this->finder->find($key, $row);
+        if (is_null($expected)) {
             return false;
         }
-        return !parent::evaluate($key, $val, $row);
+        return !$this->match($expected, $val);
     }
 }

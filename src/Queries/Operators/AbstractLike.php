@@ -1,18 +1,15 @@
 <?php
 
-namespace Rmtram\ArrayQuery\Query\Operator;
+namespace Rmtram\ArrayQuery\Queries\Operators;
+use Rmtram\ArrayQuery\Queries\Finders\FinderInterface;
+use Rmtram\ArrayQuery\Queries\Finders\RecursiveFinder;
 
 /**
  * Class AbstractLike
- * @package Rmtram\ArrayQuery\Query\Operator
+ * @package Rmtram\ArrayQuery\Queries\Operators
  */
 abstract class AbstractLike implements OperatorInterface
 {
-    /**
-     * @trait Existable
-     */
-    use Existable;
-
     /**
      * @var string
      */
@@ -21,29 +18,41 @@ abstract class AbstractLike implements OperatorInterface
     /**
      * @var array
      */
-    private $escapeCharacter = [
+    private $escapeCharacter = array(
         '\\', '/', '(',
         ')', '[', ']',
         '{', '}', '!',
         '.', '+', '-',
         '?', '*', '|',
         '$', '¥', '^'
-    ];
+    );
 
     /**
-     * @param string $key
-     * @param string $val
-     * @param array $row
+     * @var FinderInterface
+     */
+    protected $finder;
+
+    /**
+     * @param FinderInterface $finder
+     */
+    public function __construct(FinderInterface $finder)
+    {
+        $this->finder = $finder;
+    }
+
+    /**
+     * @param $expected
+     * @param $actual
      * @return bool
      */
-    public function evaluate($key, $val, $row)
+    protected function match($expected, $actual)
     {
-        $forward  = $this->sub($val, -1) !== $this->literal ? '^' : null;
-        $backward = $this->sub($val, 0, 1) !== $this->literal ? '$' : null;
-        $val = ltrim($val, $this->literal);
-        $val = rtrim($val, $this->literal);
-        $pattern = sprintf('/%s%s%s/', $forward, $this->escape($val), $backward);
-        return !!preg_match($pattern, $row[$key]);
+        $forward = $this->sub($actual, 0, 1) !== $this->literal ? '^' : null;
+        $backward  = $this->sub($actual, -1) !== $this->literal ? '$' : null;
+        $actual = ltrim($actual, $this->literal);
+        $actual = rtrim($actual, $this->literal);
+        $pattern = sprintf('/%s%s%s/', $forward, $this->escape($actual), $backward);
+        return !!preg_match($pattern, $expected);
     }
 
     /**

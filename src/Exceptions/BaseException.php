@@ -3,7 +3,7 @@
 namespace Rmtram\ArrayQuery\Exceptions;
 
 /**
- * Class SimpleTextDbException
+ * Class BaseException
  * @package Rmtram\ArrayQuery\Exceptions
  */
-class SimpleTextDbException extends \Exception {}
+abstract class BaseException extends \Exception {}

@@ -1,10 +1,10 @@
 <?php
 
-namespace Rmtram\ArrayQuery\Query\Operator;
+namespace Rmtram\ArrayQuery\Queries\Operators;
 
 /**
  * Class LessThan
- * @package Rmtram\ArrayQuery\Query\Operator
+ * @package Rmtram\ArrayQuery\Queries\Operators
  */
 class LessThan extends AbstractComparison
 {

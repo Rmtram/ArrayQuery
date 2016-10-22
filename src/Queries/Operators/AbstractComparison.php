@@ -1,33 +1,36 @@
 <?php
 
-namespace Rmtram\ArrayQuery\Query\Operator;
+namespace Rmtram\ArrayQuery\Queries\Operators;
 use Rmtram\ArrayQuery\Exceptions\EmptyOperatorException;
 use Rmtram\ArrayQuery\Exceptions\InvalidArgumentException;
+use Rmtram\ArrayQuery\Queries\Finders\FinderInterface;
 
 /**
  * Class AbstractComparison
- * @package Rmtram\ArrayQuery\Query\Operator
+ * @package Rmtram\ArrayQuery\Queries\Operators
  */
 abstract class AbstractComparison implements OperatorInterface
 {
-    /**
-     * @trait Existable
-     */
-    use Existable;
-
     /**
      * @var string
      */
     protected $operator;
 
     /**
+     * @var FinderInterface
+     */
+    protected $finder;
+
+    /**
+     * @param FinderInterface $finder
      * @throws EmptyOperatorException
      */
-    public function __construct()
+    public function __construct(FinderInterface $finder)
     {
         if (empty($this->operator)) {
             throw new EmptyOperatorException(get_called_class());
         }
+        $this->finder = $finder;
     }
 
     /**
@@ -39,10 +42,11 @@ abstract class AbstractComparison implements OperatorInterface
      */
     public function evaluate($key, $val, $row)
     {
-        if (!$this->exists($key, $row)) {
+        $expected = $this->finder->find($key, $row);
+        if (is_null($expected)) {
             return false;
         }
-        return $this->compare($val, $row[$key], $this->operator);
+        return $this->compare($expected, $val, $this->operator);
     }
 
 
@@ -55,7 +59,6 @@ abstract class AbstractComparison implements OperatorInterface
      */
     public function compare($a, $b, $operator)
     {
-
         switch ($operator) {
             case '<':
                 return $a < $b;

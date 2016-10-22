@@ -1,10 +1,10 @@
 <?php
 
-namespace Rmtram\ArrayQuery\Query\Operator;
+namespace Rmtram\ArrayQuery\Queries\Operators;
 
 /**
  * Interface OperatorInterface
- * @package Rmtram\ArrayQuery\Query\Operator
+ * @package Rmtram\ArrayQuery\Queries\Operators
  */
 interface OperatorInterface
 {
