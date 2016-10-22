@@ -188,6 +188,20 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testGte()
+    {
+        $this->assertTrue(
+            $this->query()
+                ->gte('created_at', '2016-10-10')
+                ->exists()
+        );
+
+        $this->assertFalse(
+            $this->query()
+                ->gte('created_at', '2016-10-14')
+                ->exists()
+        );
+    }
 
     public function testLike()
     {
