@@ -266,6 +266,27 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testLte()
+    {
+        $this->assertFalse(
+            $this->query()
+                ->lte('created_at', '2016-10-09')
+                ->exists()
+        );
+
+        $this->assertTrue(
+            $this->query()
+                ->lte('created_at', '2016-10-10')
+                ->exists()
+        );
+
+        $this->assertTrue(
+            $this->query()
+                ->lte('created_at', '2016-10-14')
+                ->exists()
+        );
+    }
+
     public function testLike()
     {
         $len = $this->query()
