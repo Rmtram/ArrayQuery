@@ -1,18 +1,16 @@
 {
-  "name": "rmtram/simple-text-db",
+  "name": "rmtram/array-query",
   "type": "library",
-  "description": "Simple text file based database and database mapper.",
+  "description": "Array query",
   "keywords": [
-    "text database",
-    "text db",
-    "text database mapper",
-    "TextDatabase",
-    "text kvs"
+    "array query",
+    "query",
+    "array"
   ],
-  "homepage": "https://github.com/Rmtram/SimpleTextDb",
+  "homepage": "https://github.com/Rmtram/ArrayQuery",
   "support": {
-    "issues": "https://github.com/Rmtram/SimpleTextDb/issues",
-    "source": "https://github.com/Rmtram/SimpleTextDb"
+    "issues": "https://github.com/Rmtram/ArrayQuery/issues",
+    "source": "https://github.com/Rmtram/ArrayQuery"
   },
   "license": "MIT",
   "authors": [
