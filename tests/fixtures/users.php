@@ -34,5 +34,13 @@ return  array(
             'age' => 18
         ),
         'created_at' => '2016-10-13'
+    ),
+    array(
+        'id' => 4,
+        'profile' => array(
+            'name' => 'u%',
+            'age' => 18
+        ),
+        'created_at' => '2016-10-13'
     )
 );

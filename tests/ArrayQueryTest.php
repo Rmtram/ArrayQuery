@@ -25,7 +25,7 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
     public function testAllWithOrder()
     {
         $actual = $this->query()->order('id', 'desc')->all();
-        $this->assertEquals(3, $actual[0]['id']);
+        $this->assertEquals(4, $actual[0]['id']);
     }
 
     public function testAllToEmptyResult()
@@ -43,9 +43,8 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
     public function testFirstWithOrder()
     {
         $actual = $this->query()->order('id', 'desc')->first();
-        $this->assertEquals(3, $actual['id']);
+        $this->assertEquals(4, $actual['id']);
     }
-
 
     public function testFirstToEmptyResult()
     {
@@ -80,7 +79,7 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
             ->each(function($row) use(&$actual) {
                 $actual[] = $row;
             });
-        $this->assertEquals(3, $actual[0]['id']);
+        $this->assertEquals(4, $actual[0]['id']);
     }
 
     public function testEachWithEmpty()
@@ -109,7 +108,7 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
             ->map(function($row)  {
                 return $row;
             });
-        $this->assertEquals(3, $actual[0]['id']);
+        $this->assertEquals(4, $actual[0]['id']);
     }
 
     public function testMapWithEmpty()
@@ -287,18 +286,48 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testOrLte()
+    {
+        $this->assertTrue(
+            $this->query()
+                ->eq('id', 3)
+                ->orLte('created_at', '2016-10-14')
+                ->exists()
+        );
+
+        $this->assertTrue(
+            $this->query()
+                ->eq('id', -2)
+                ->orLte('created_at', '2016-10-10')
+                ->exists()
+        );
+
+        $this->assertFalse(
+            $this->query()
+                ->eq('id', -2)
+                ->orLte('created_at', '2016-10-09')
+                ->exists()
+        );
+    }
+
     public function testLike()
     {
-        $len = $this->query()
-            ->like('profile.name', 'unknown%')
-            ->count();
-        $this->assertEquals(3, $len);
+        $this->assertEquals(4, $this->countByProfileNameOfLike('u%'));
+        $this->assertEquals(1, $this->countByProfileNameOfLike('%1'));
+        $this->assertEquals(1, $this->countByProfileNameOfLike('unknown1'));
+//        $this->assertEquals(1, $this->countByProfileNameOfLike('u+'));
+//        $this->assertEquals(1, $this->countByProfileNameOfLike('u%1'));
+//        $this->assertEquals(1, $this->countByProfileNameOfLike('%w%1'));
+//        $this->assertEquals(1, $this->countByProfileNameOfLike('u%w%1'));
+//        $this->assertEquals(1, $this->countByProfileNameOfLike('unknown%1'));
+//        $this->assertEquals(0, $this->countByProfileNameOfLike('w%1'));
+        $this->assertEquals(0, $this->countByProfileNameOfLike('%u'));
     }
 
     public function testNotLike()
     {
         $len = $this->query()
-            ->notLike('profile.name', 'unknown%')
+            ->notLike('profile.name', 'u%')
             ->count();
         $this->assertEquals(0, $len);
     }
@@ -324,6 +353,11 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
     private function query($fixture = 'users')
     {
         return new ArrayQuery($this->fixtures[$fixture]);
+    }
+
+    private function countByProfileNameOfLike($text)
+    {
+        return $this->query()->like('profile.name', $text)->count();
     }
 
 }
