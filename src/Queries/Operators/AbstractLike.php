@@ -1,8 +1,8 @@
 <?php
 
 namespace Rmtram\ArrayQuery\Queries\Operators;
+
 use Rmtram\ArrayQuery\Queries\Finders\FinderInterface;
-use Rmtram\ArrayQuery\Queries\Finders\RecursiveFinder;
 
 /**
  * Class AbstractLike
@@ -72,15 +72,11 @@ abstract class AbstractLike implements OperatorInterface
      * @param string $string
      * @param int $start
      * @param int|null $length
-     * @param string|null $encoding
      * @return string
      */
-    protected function sub($string, $start, $length = null, $encoding = null)
+    protected function sub($string, $start, $length = null)
     {
         if(function_exists('mb_substr')) {
-            if ($encoding) {
-                return mb_substr($string, $start, $length, $encoding);
-            }
             return mb_substr($string, $start, $length);
         }
         return substr($string, $start, $length);

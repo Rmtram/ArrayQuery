@@ -2,17 +2,28 @@
 
 namespace Rmtram\ArrayQuery;
 
-use Rmtram\ArrayQuery\Exceptions\CallbackBreakException;
 use Rmtram\ArrayQuery\Exceptions\InvalidArgumentException;
-use Rmtram\ArrayQuery\Queries\Query;
-use Rmtram\Sorter\Sorter;
+use Rmtram\ArrayQuery\Queries\Evaluator;
+use Rmtram\ArrayQuery\Queries\Finders\RecursiveFinder;
+use Rmtram\ArrayQuery\Queries\Where;
 
 /**
  * Class ArrayQuery
  * @package Rmtram\ArrayQuery
+ * @method $this eq(string $key, mixed $val)
+ * @method $this notEq(string $key, mixed $val)
+ * @method $this in(string $key, array $val)
+ * @method $this notIn(string $key, array $val)
+ * @method $this gt(string $key, int $val)
+ * @method $this gte(string $key, int $val)
+ * @method $this lt(string $key, int $val)
+ * @method $this lte(string $key, int $val)
+ * @method $this like(string $key, string $val)
+ * @method $this notLike(string $key, string $val)
  */
-class ArrayQuery extends Query
+class ArrayQuery
 {
+    const DEFAULT_DELIMITER = '.';
 
     /**
      * @var array
@@ -20,91 +31,81 @@ class ArrayQuery extends Query
     private $items;
 
     /**
-     * @var array
+     * @var Where
      */
-    private $order = array();
+    private $where;
+
+    /**
+     * @var string|null
+     */
+    private $delimiter = self::DEFAULT_DELIMITER;
 
     /**
      * @param array $items
      */
     public function __construct(array $items)
     {
-        parent::__construct();
+        $this->where = new Where();
         $this->items = $items;
     }
 
     /**
-     * @return array
-     * @throws \Exception
-     */
-    public function first()
-    {
-        $ret = null;
-        try {
-            $items = $this->items;
-            if (!empty($this->order)) {
-                $items = Sorter::make($items)->sort($this->order);
-            }
-            $this->walk($items, function($item) use(&$ret) {
-                $ret = $item;
-                throw new CallbackBreakException;
-            });
-            return $ret;
-        } catch (CallbackBreakException $e) {
-            return $ret;
-        } catch (\Exception $e) {
-            throw $e;
-        }
-    }
-
-    /**
-     * @param array|string $column
-     * @param null|string $direction
+     * @param string $delimiter
      * @return $this
-     * @throws InvalidArgumentException
      */
-    public function order()
+    public function setDelimiter(string $delimiter): self
     {
-        $args = func_get_args();
-        if (empty($args[0])) {
-            throw new InvalidArgumentException('invalid arguments of empty.');
-        }
-
-        if (is_array($args[0])) {
-            foreach ($args[0] as $column => $direction) {
-                $this->order[$column] = $direction;
-            }
-            return $this;
-        }
-
-        if (2 !== $len = count($args)) {
-            throw new InvalidArgumentException('expects at 2 parameters, ' . $len . ' given.');
-        }
-
-        $this->order[$args[0]] = $args[1];
+        $this->delimiter = $delimiter;
         return $this;
     }
 
     /**
-     * @return array
+     * @param callable $callback
+     * @return $this
      */
-    public function all()
+    public function and(callable $callback): self
     {
-        $items = array();
-        $this->walk($this->items, function($item) use(&$items) {
-            $items[] = $item;
-        });
-        return $this->sort($items);
+        $this->where->and($callback);
+        return $this;
     }
 
     /**
      * @param callable $callback
-     * @return void
+     * @return $this
      */
-    public function each(callable $callback)
+    public function or(callable $callback): self
     {
-        $items = $this->sort($this->items);
-        $this->walk($items, $callback);
+        $this->where->or($callback);
+        return $this;
+    }
+
+    /**
+     * @return \Generator
+     */
+    public function generator(): \Generator
+    {
+        $evaluator = new Evaluator(new RecursiveFinder($this->delimiter));
+        foreach ($this->items as $item) {
+            if($evaluator->evaluates($this->where, $item) !== Evaluator::NG) {
+                yield $item;
+            }
+        }
+    }
+
+    /**
+     * @return array|null
+     */
+    public function one(): ?array
+    {
+        return $this->generator()->current();
+    }
+
+    /**
+     * @return array
+     */
+    public function all(): array
+    {
+        return iterator_to_array($this->generator());
     }
 
     /**
@@ -113,41 +114,27 @@ class ArrayQuery extends Query
      */
     public function map(callable $callback)
     {
-        $items = array();
-        $this->walk($this->items, function($item) use($callback, &$items) {
+        $items = [];
+        foreach ($this->generator() as $item) {
             $items[] = $callback($item);
-        });
-        return $this->sort($items);
+        }
+        return $items;
     }
 
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
-        $count = 0;
-        $this->walk($this->items, function() use(&$count) {
-            $count++;
-        });
-        return $count;
+        return count($this->all());
     }
 
     /**
      * @return bool
-     * @throws \Exception
      */
-    public function exists()
+    public function exists(): bool
     {
-        try {
-            $this->walk($this->items, function() {
-                throw new CallbackBreakException;
-            });
-            return false;
-        } catch (CallbackBreakException $e) {
-            return true;
-        } catch (\Exception $e) {
-            throw $e;
-        }
+        return $this->generator()->valid();
     }
 
     /**
@@ -155,22 +142,19 @@ class ArrayQuery extends Query
      */
     public function reset()
     {
-        $this->where = array();
-        $this->order = array();
-        $this->delimiter(self::DEFAULT_DELIMITER);
+        $this->where = new Where();
         return $this;
     }
 
     /**
-     * @param array|null $items
-     * @return array
+     * @param string $method
+     * @param array $args
+     * @return $this
+     * @throws InvalidArgumentException
      */
-    private function sort($items = null)
+    public function __call(string $method, array $args): self
     {
-        if (empty($this->order)) {
-            return $items;
-        }
-        return Sorter::make($items)->sort($this->order);
+        $this->where->__call($method, $args);
+        return $this;
     }
-
 }
