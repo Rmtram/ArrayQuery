@@ -24,8 +24,11 @@
     "lint": "./vendor/bin/php-cs-fixer fix --dry-run --diff -v",
     "lintfix": "./vendor/bin/php-cs-fixer fix --diff -v"
   },
+  "require": {
+    "php": ">=7.2"
+  },
   "require-dev": {
-    "phpunit/phpunit": "~7.0",
+    "phpunit/phpunit": "~8.0",
     "friendsofphp/php-cs-fixer": "^2.16"
   },
   "autoload": {
@@ -41,5 +44,9 @@
       "tests/"
     ]
   },
-  "require": {}
+  "config": {
+    "platform": {
+      "php": "7.2"
+    }
+  }
 }
