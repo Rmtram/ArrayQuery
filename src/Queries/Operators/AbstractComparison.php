@@ -40,7 +40,7 @@ abstract class AbstractComparison implements OperatorInterface
      * @return bool
      * @throws InvalidArgumentException
      */
-    public function evaluate($key, $val, $row)
+    public function evaluate(string $key, $val, array $row): bool
     {
         $expected = $this->finder->find($key, $row);
         if (is_null($expected)) {
@@ -57,7 +57,7 @@ abstract class AbstractComparison implements OperatorInterface
      * @return bool
      * @throws InvalidArgumentException
      */
-    public function compare($a, $b, $operator)
+    public function compare($a, $b, string $operator): bool
     {
         switch ($operator) {
             case '<':

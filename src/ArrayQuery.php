@@ -141,7 +141,7 @@ class ArrayQuery
     /**
      * @return $this
      */
-    public function reset()
+    public function reset(): self
     {
         $this->where = new Where();
         return $this;

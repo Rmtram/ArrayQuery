@@ -35,7 +35,7 @@ class RecursiveFinder implements FinderInterface
     /**
      * @param string $key
      * @param array $item
-     * @return array|null
+     * @return mixed
      */
     public function find(string $key, array $item)
     {

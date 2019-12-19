@@ -19,14 +19,14 @@ abstract class AbstractLike implements OperatorInterface
     /**
      * @var array
      */
-    private $escapeCharacter = array(
+    private $escapeCharacter = [
         '\\', '/', '(',
         ')', '[', ']',
         '{', '}', '!',
         '.', '+', '-',
         '?', '*', '|',
         '$', '¥', '^'
-    );
+    ];
 
     /**
      * @var FinderInterface
@@ -46,7 +46,7 @@ abstract class AbstractLike implements OperatorInterface
      * @param $actual
      * @return bool
      */
-    protected function match($expected, $actual)
+    protected function match($expected, $actual): bool
     {
         $forward = $this->sub($actual, 0, 1) !== $this->literal ? '^' : null;
         $backward  = $this->sub($actual, -1) !== $this->literal ? '$' : null;
@@ -60,7 +60,7 @@ abstract class AbstractLike implements OperatorInterface
      * @param string $str
      * @return string
      */
-    protected function escape($str)
+    protected function escape(string $str): string
     {
         foreach ($this->escapeCharacter as $char) {
             $str = str_replace($char, '\\' . $char, $str);
@@ -75,7 +75,7 @@ abstract class AbstractLike implements OperatorInterface
      * @param int|null $length
      * @return string
      */
-    protected function sub($string, $start, $length = null)
+    protected function sub(string $string, int $start, $length = null): string
     {
         if (function_exists('mb_substr')) {
             return mb_substr($string, $start, $length);

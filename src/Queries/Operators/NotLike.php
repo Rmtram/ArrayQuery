@@ -15,7 +15,7 @@ class NotLike extends AbstractLike
      * @param array $row
      * @return bool
      */
-    public function evaluate($key, $val, $row)
+    public function evaluate(string $key, $val, array $row): bool
     {
         $expected = $this->finder->find($key, $row);
         if (is_null($expected)) {
