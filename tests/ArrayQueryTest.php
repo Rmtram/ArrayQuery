@@ -10,9 +10,9 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
     /**
      * @var array
      */
-    private $fixtures = array();
+    private $fixtures = [];
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->fixtures['users'] = require __DIR__ . '/fixtures/users.php';
     }
@@ -398,11 +398,9 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
         $this->assertNotEquals($len1, $len2);
     }
 
-    /**
-     * @expectedException \BadMethodCallException
-     */
     public function testUndefinedOperator()
     {
+        $this->expectException(\BadMethodCallException::class);
         $this->query()->dummy(1, 2);
     }
 
