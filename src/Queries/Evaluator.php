@@ -105,7 +105,6 @@ class Evaluator
      */
     public function classify(array $children): array
     {
-        // and と or で　わける
         $classify = [Where::LOGIC_AND => [], Where::LOGIC_OR => []];
         /** @var Where $child */
         foreach ($children as $child) {
