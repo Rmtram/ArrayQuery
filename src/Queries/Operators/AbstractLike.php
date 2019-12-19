@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery\Queries\Operators;
 
@@ -76,7 +77,7 @@ abstract class AbstractLike implements OperatorInterface
      */
     protected function sub($string, $start, $length = null)
     {
-        if(function_exists('mb_substr')) {
+        if (function_exists('mb_substr')) {
             return mb_substr($string, $start, $length);
         }
         return substr($string, $start, $length);

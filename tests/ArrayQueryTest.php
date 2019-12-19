@@ -52,7 +52,7 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
 
     public function testMap()
     {
-        $actual = $this->query()->map(function($row) {
+        $actual = $this->query()->map(function ($row) {
             return $row;
         });
         $this->assertEquals($this->fixtures['users'], $actual);
@@ -62,7 +62,7 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
     {
         $actual = $this->query()
             ->eq('id', -1)
-            ->map(function($row) {
+            ->map(function ($row) {
                 return $row;
             });
         $this->assertEquals(array(), $actual);
@@ -136,7 +136,7 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
             ->eq('profile.age', 18)
             ->and(function (Where $where) {
                 $where->eq('id', 1)->or(function (Where $where) {
-                   $where->eq('id', 2) ;
+                    $where->eq('id', 2) ;
                 });
             })
             ->count());
@@ -153,28 +153,32 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
     public function testOrForEmpty()
     {
         $this->assertEquals(4, $this->query()
-            ->or(function (Where $where) {})
-            ->or(function (Where $where) {})
+            ->or(function (Where $where) {
+            })
+            ->or(function (Where $where) {
+            })
             ->count());
         $this->assertEquals(0, $this->query()
             ->or(function (Where $where) {
                 $where->eq('a', -1);
             })
-            ->or(function (Where $where) {})
+            ->or(function (Where $where) {
+            })
             ->count());
         $this->assertEquals(0, $this->query()
             ->eq('a', -1)
-            ->or(function (Where $where) {})
+            ->or(function (Where $where) {
+            })
             ->count());
     }
 
     public function testOrEq()
     {
         $this->assertTrue(
-          $this->query()
+            $this->query()
             ->eq('id', 1)
             ->or(function (Where $where) {
-               $where->eq('profile.name', 'unknown2');
+                $where->eq('profile.name', 'unknown2');
             })
             ->exists()
         );
@@ -226,7 +230,7 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testOrGt($id, $args, $expected)
     {
-        $actual = $this->query()->eq('id', $id)->or(function (Where $where) use($args) {
+        $actual = $this->query()->eq('id', $id)->or(function (Where $where) use ($args) {
             $where->gt(...$args);
         })->exists();
         $this->assertEquals($expected, $actual);
@@ -268,7 +272,7 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testOrGte($id, $args, $expected)
     {
-        $actual = $this->query()->eq('id', $id)->or(function (Where $where) use($args) {
+        $actual = $this->query()->eq('id', $id)->or(function (Where $where) use ($args) {
             $where->gte(...$args);
         })->exists();
         $this->assertEquals($expected, $actual);
@@ -310,7 +314,7 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testOrLt($id, $args, $expected)
     {
-        $actual = $this->query()->eq('id', $id)->or(function (Where $where) use($args) {
+        $actual = $this->query()->eq('id', $id)->or(function (Where $where) use ($args) {
             $where->lt(...$args);
         })->exists();
         $this->assertEquals($expected, $actual);
@@ -353,7 +357,7 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
      */
     public function testOrLte($id, $args, $expected)
     {
-        $bool = $this->query()->eq('id', $id)->or(function (Where $where) use($args) {
+        $bool = $this->query()->eq('id', $id)->or(function (Where $where) use ($args) {
             $where->lte(...$args);
         })->exists();
         $this->assertEquals($expected, $bool);
@@ -411,5 +415,4 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
     {
         return $this->query()->like('profile.name', $text)->count();
     }
-
 }

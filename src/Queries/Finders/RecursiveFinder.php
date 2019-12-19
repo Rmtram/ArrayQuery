@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery\Queries\Finders;
 
@@ -66,5 +67,4 @@ class RecursiveFinder implements FinderInterface
     {
         return isset($item[$key]) ? $item[$key] : null;
     }
-
 }

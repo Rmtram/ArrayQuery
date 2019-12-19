@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery\Queries;
 
@@ -160,5 +161,4 @@ class Evaluator
         // If NG exists with "OR", it will be NG.
         return $ng ? self::NG : self::EMPTY;
     }
-
 }

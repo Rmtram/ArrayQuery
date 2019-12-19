@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery;
 
@@ -86,7 +87,7 @@ class ArrayQuery
     {
         $evaluator = new Evaluator(new RecursiveFinder($this->delimiter));
         foreach ($this->items as $item) {
-            if($evaluator->evaluates($this->where, $item) !== Evaluator::NG) {
+            if ($evaluator->evaluates($this->where, $item) !== Evaluator::NG) {
                 yield $item;
             }
         }
