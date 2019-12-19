@@ -37,17 +37,34 @@ class ArrayQuery
     private $where;
 
     /**
+     * @var bool
+     */
+    private $resettable;
+
+    /**
      * @var string|null
      */
     private $delimiter = self::DEFAULT_DELIMITER;
 
     /**
      * @param array $items
+     * @param bool $resettable
      */
-    public function __construct(array $items)
+    public function __construct(array $items, bool $resettable = true)
     {
         $this->where = new Where();
         $this->items = $items;
+        $this->resettable = $resettable;
+    }
+
+    /**
+     * @param bool $resettable
+     * @return $this
+     */
+    public function setResettable(bool $resettable): self
+    {
+        $this->resettable = $resettable;
+        return $this;
     }
 
     /**
@@ -90,6 +107,9 @@ class ArrayQuery
             if ($evaluator->evaluates($this->where, $item) !== Evaluator::NG) {
                 yield $item;
             }
+        }
+        if ($this->resettable) {
+            $this->reset();
         }
     }
 
