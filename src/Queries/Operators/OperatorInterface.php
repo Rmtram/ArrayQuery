@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery\Queries\Operators;
 
@@ -13,7 +14,7 @@ interface OperatorInterface
      * @param string $key
      * @param $val
      * @param $row
-     * @return boolean
+     * @return bool
      */
-    public function evaluate($key, $val, $row);
+    public function evaluate(string $key, $val, array $row): bool;
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery\Queries\Finders;
 
@@ -6,13 +7,12 @@ namespace Rmtram\ArrayQuery\Queries\Finders;
  * Interface FinderInterface
  * @package Rmtram\ArrayQuery\Queries\Finders
  */
-interface FinderInterface {
-
+interface FinderInterface
+{
     /**
-     * @param $key
+     * @param string $key
      * @param array $item
-     * @return mixed
+     * @return array|null
      */
-    public function find($key, array $item);
-
+    public function find(string $key, array $item);
 }

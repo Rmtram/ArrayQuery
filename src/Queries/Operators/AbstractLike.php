@@ -1,8 +1,9 @@
 <?php
+declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery\Queries\Operators;
+
 use Rmtram\ArrayQuery\Queries\Finders\FinderInterface;
-use Rmtram\ArrayQuery\Queries\Finders\RecursiveFinder;
 
 /**
  * Class AbstractLike
@@ -18,14 +19,14 @@ abstract class AbstractLike implements OperatorInterface
     /**
      * @var array
      */
-    private $escapeCharacter = array(
+    private $escapeCharacter = [
         '\\', '/', '(',
         ')', '[', ']',
         '{', '}', '!',
         '.', '+', '-',
         '?', '*', '|',
         '$', '¥', '^'
-    );
+    ];
 
     /**
      * @var FinderInterface
@@ -45,7 +46,7 @@ abstract class AbstractLike implements OperatorInterface
      * @param $actual
      * @return bool
      */
-    protected function match($expected, $actual)
+    protected function match($expected, $actual): bool
     {
         $forward = $this->sub($actual, 0, 1) !== $this->literal ? '^' : null;
         $backward  = $this->sub($actual, -1) !== $this->literal ? '$' : null;
@@ -59,7 +60,7 @@ abstract class AbstractLike implements OperatorInterface
      * @param string $str
      * @return string
      */
-    protected function escape($str)
+    protected function escape(string $str): string
     {
         foreach ($this->escapeCharacter as $char) {
             $str = str_replace($char, '\\' . $char, $str);
@@ -72,15 +73,11 @@ abstract class AbstractLike implements OperatorInterface
      * @param string $string
      * @param int $start
      * @param int|null $length
-     * @param string|null $encoding
      * @return string
      */
-    protected function sub($string, $start, $length = null, $encoding = null)
+    protected function sub(string $string, int $start, $length = null): string
     {
-        if(function_exists('mb_substr')) {
-            if ($encoding) {
-                return mb_substr($string, $start, $length, $encoding);
-            }
+        if (function_exists('mb_substr')) {
             return mb_substr($string, $start, $length);
         }
         return substr($string, $start, $length);

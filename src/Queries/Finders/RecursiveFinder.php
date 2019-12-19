@@ -1,7 +1,7 @@
 <?php
+declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery\Queries\Finders;
-use Rmtram\ArrayQuery\Exceptions\InvalidArgumentException;
 
 /**
  * Class RecursiveFinder
@@ -9,7 +9,6 @@ use Rmtram\ArrayQuery\Exceptions\InvalidArgumentException;
  */
 class RecursiveFinder implements FinderInterface
 {
-
     /**
      * @var string
      */
@@ -17,9 +16,8 @@ class RecursiveFinder implements FinderInterface
 
     /**
      * @param string $delimiter
-     * @throws \Rmtram\ArrayQuery\Exceptions\InvalidArgumentException
      */
-    public function __construct($delimiter = '.')
+    public function __construct(string $delimiter = '.')
     {
         $this->delimiter($delimiter);
     }
@@ -27,23 +25,19 @@ class RecursiveFinder implements FinderInterface
     /**
      * @param $delimiter
      * @return $this
-     * @throws \Rmtram\ArrayQuery\Exceptions\InvalidArgumentException
      */
-    public function delimiter($delimiter)
+    public function delimiter(string $delimiter): self
     {
-        if (!is_string($delimiter)) {
-            throw new InvalidArgumentException('invalid variable type, delimiter is only string.');
-        }
         $this->delimiter = $delimiter;
         return $this;
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @param array $item
      * @return mixed
      */
-    public function find($key, array $item)
+    public function find(string $key, array $item)
     {
         if (empty($item)) {
             return null;
@@ -65,13 +59,12 @@ class RecursiveFinder implements FinderInterface
     }
 
     /**
-     * @param $key
-     * @param $item
-     * @return mixed
+     * @param string $key
+     * @param array $item
+     * @return mixed|null
      */
-    private function pick($key, $item)
+    private function pick(string $key, array $item)
     {
         return isset($item[$key]) ? $item[$key] : null;
     }
-
 }

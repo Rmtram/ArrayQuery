@@ -1,7 +1,8 @@
 <?php
+declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery\Queries\Operators;
-use Rmtram\ArrayQuery\Exceptions\EmptyOperatorException;
+
 use Rmtram\ArrayQuery\Exceptions\InvalidArgumentException;
 use Rmtram\ArrayQuery\Queries\Finders\FinderInterface;
 
@@ -23,12 +24,11 @@ abstract class AbstractComparison implements OperatorInterface
 
     /**
      * @param FinderInterface $finder
-     * @throws EmptyOperatorException
      */
     public function __construct(FinderInterface $finder)
     {
         if (empty($this->operator)) {
-            throw new EmptyOperatorException(get_called_class());
+            throw new \LogicException(get_called_class());
         }
         $this->finder = $finder;
     }
@@ -40,7 +40,7 @@ abstract class AbstractComparison implements OperatorInterface
      * @return bool
      * @throws InvalidArgumentException
      */
-    public function evaluate($key, $val, $row)
+    public function evaluate(string $key, $val, array $row): bool
     {
         $expected = $this->finder->find($key, $row);
         if (is_null($expected)) {
@@ -57,7 +57,7 @@ abstract class AbstractComparison implements OperatorInterface
      * @return bool
      * @throws InvalidArgumentException
      */
-    public function compare($a, $b, $operator)
+    public function compare($a, $b, string $operator): bool
     {
         switch ($operator) {
             case '<':
@@ -72,9 +72,12 @@ abstract class AbstractComparison implements OperatorInterface
                 return $a === $b;
             case '!=':
                 return $a !== $b;
+            case 'in':
+                return in_array($a, $b, true);
+            case '!in':
+                return !in_array($a, $b, true);
             default:
                 throw new InvalidArgumentException('invalid operator ' . $operator);
         }
     }
-
 }
