@@ -3,10 +3,10 @@
 namespace Rmtram\ArrayQuery\Tests;
 
 use Rmtram\ArrayQuery\ArrayQuery;
+use Rmtram\ArrayQuery\Queries\Where;
 
-class ArrayQueryTest extends \PHPUnit_Framework_TestCase
+class ArrayQueryTest extends \PHPUnit\Framework\TestCase
 {
-
     /**
      * @var array
      */
@@ -22,33 +22,21 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->fixtures['users'], $this->query()->all());
     }
 
-    public function testAllWithOrder()
-    {
-        $actual = $this->query()->order('id', 'desc')->all();
-        $this->assertEquals(4, $actual[0]['id']);
-    }
-
     public function testAllToEmptyResult()
     {
         $actual = $this->query()->eq('id', -1)->all();
         $this->assertEquals(array(), $actual);
     }
 
-    public function testFirst()
+    public function testOne()
     {
-        $actual = $this->query()->first();
+        $actual = $this->query()->one();
         $this->assertEquals($this->fixtures['users'][0], $actual);
     }
 
-    public function testFirstWithOrder()
+    public function testOneToEmptyResult()
     {
-        $actual = $this->query()->order('id', 'desc')->first();
-        $this->assertEquals(4, $actual['id']);
-    }
-
-    public function testFirstToEmptyResult()
-    {
-        $actual = $this->query()->eq('id', -1)->first();
+        $actual = $this->query()->eq('id', -1)->one();
         $this->assertEquals(null, $actual);
     }
 
@@ -62,53 +50,12 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->query()->eq('id', -1)->exists());
     }
 
-    public function testEach()
-    {
-        $actual = array();
-        $this->query()->each(function($row) use(&$actual) {
-            $actual[] = $row;
-        });
-        $this->assertEquals($this->fixtures['users'], $actual);
-    }
-
-    public function testEachWithOrder()
-    {
-        $actual = array();
-        $this->query()
-            ->order('id', 'desc')
-            ->each(function($row) use(&$actual) {
-                $actual[] = $row;
-            });
-        $this->assertEquals(4, $actual[0]['id']);
-    }
-
-    public function testEachWithEmpty()
-    {
-        $actual = array();
-        $this->query()
-            ->eq('id', -1)
-            ->each(function($row) use(&$actual) {
-                $actual[] = $row;
-            });
-        $this->assertEquals(array(), $actual);
-    }
-
     public function testMap()
     {
         $actual = $this->query()->map(function($row) {
             return $row;
         });
         $this->assertEquals($this->fixtures['users'], $actual);
-    }
-
-    public function testMapWithOrder()
-    {
-        $actual = $this->query()
-            ->order('id', 'desc')
-            ->map(function($row)  {
-                return $row;
-            });
-        $this->assertEquals(4, $actual[0]['id']);
     }
 
     public function testMapWithEmpty()
@@ -121,21 +68,104 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(array(), $actual);
     }
 
-    public function testEq()
+    public function providerTestIn()
     {
-        $this->assertTrue(
-            $this->query()
-                ->eq('id', 1)
-                ->eq('created_at', '2016-10-10')
-                ->exists()
-        );
+        return [
+            [[1], 1],
+            [[1, 2], 2],
+            [[4, 5], 1],
+            [[-1], 0]
+        ];
+    }
 
-        $this->assertFalse(
-            $this->query()
-                ->eq('id', 2)
-                ->eq('created_at', '2016-10-10')
-                ->exists()
-        );
+    /**
+     * @param $args
+     * @param $expected
+     * @dataProvider providerTestIn
+     */
+    public function testIn($args, $expected)
+    {
+        $actual = $this->query()->in('id', $args)->count();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function providerTestNotIn()
+    {
+        return [
+            [[1], 3],
+            [[1, 2], 2],
+            [[4, 5], 3],
+            [[-1], 4]
+        ];
+    }
+
+    /**
+     * @param $args
+     * @param $expected
+     * @dataProvider providerTestNotIn
+     */
+    public function testNotIn($args, $expected)
+    {
+        $actual = $this->query()->notIn('id', $args)->count();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function providerTestEq()
+    {
+        return [
+            [1, ['created_at', '2016-10-10'], true],
+            [2, ['created_at', '2016-10-10'], false]
+        ];
+    }
+
+    /**
+     * @param $id
+     * @param $args
+     * @param $expected
+     * @dataProvider providerTestEq
+     */
+    public function testEq($id, $args, $expected)
+    {
+        $actual = $this->query()->eq('id', $id)->eq(...$args)->exists();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function testAndOr()
+    {
+        $this->assertEquals(2, $this->query()
+            ->eq('profile.age', 18)
+            ->and(function (Where $where) {
+                $where->eq('id', 1)->or(function (Where $where) {
+                   $where->eq('id', 2) ;
+                });
+            })
+            ->count());
+        $this->assertEquals(1, $this->query()
+            ->and(function (Where $where) {
+                $where->eq('id', -1);
+            })
+            ->or(function (Where $where) {
+                $where->eq('id', 1);
+            })
+            ->count());
+    }
+
+    public function testOrForEmpty()
+    {
+        $this->assertEquals(4, $this->query()
+            ->or(function (Where $where) {})
+            ->or(function (Where $where) {})
+            ->count());
+        $this->assertEquals(0, $this->query()
+            ->or(function (Where $where) {
+                $where->eq('a', -1);
+            })
+            ->or(function (Where $where) {})
+            ->count());
+        $this->assertEquals(0, $this->query()
+            ->eq('a', -1)
+            ->or(function (Where $where) {})
+            ->count());
     }
 
     public function testOrEq()
@@ -143,185 +173,210 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue(
           $this->query()
             ->eq('id', 1)
-            ->orEq('profile.name', 'unknown2')
+            ->or(function (Where $where) {
+               $where->eq('profile.name', 'unknown2');
+            })
             ->exists()
         );
 
         $this->assertFalse(
             $this->query()
-                ->orEq('id', -1)
-                ->orEq('id', -2)
+                ->or(function (Where $where) {
+                    $where->eq('id', -1);
+                })
+                ->or(function (Where $where) {
+                    $where->eq('id', -2);
+                })
                 ->exists()
         );
     }
 
-    public function testGt()
+    public function providerTestGt()
     {
-        $this->assertTrue(
-          $this->query()
-              ->gt('created_at', '0000-01-01')
-              ->exists()
-        );
-
-        $this->assertFalse(
-            $this->query()
-                ->gt('created_at', '9999-01-01')
-                ->exists()
-        );
+        return [
+            [['created_at', '0000-01-01'], true],
+            [['created_at', '9999-01-01'], false]
+        ];
     }
 
-    public function testOrGt()
+    /**
+     * @param $args
+     * @param $expected
+     * @dataProvider providerTestGt
+     */
+    public function testGt($args, $expected)
     {
-        $this->assertTrue(
-            $this->query()
-                ->eq('id', 2)
-                ->orGt('created_at', '9999-01-01')
-                ->exists()
-        );
-
-        $this->assertFalse(
-            $this->query()
-                ->eq('id', 9999)
-                ->orGt('created_at', '9999-01-01')
-                ->exists()
-        );
+        $actual = $this->query()->gt(...$args)->exists();
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testGte()
+    public function providerTestOrGt()
     {
-        $this->assertTrue(
-            $this->query()
-                ->gte('created_at', '2016-10-10')
-                ->exists()
-        );
-
-        $this->assertFalse(
-            $this->query()
-                ->gte('created_at', '2016-10-14')
-                ->exists()
-        );
+        return [
+            [2, ['created_at', '9999-01-01'], true],
+            [9999, ['created_at', '9999-01-01'], false],
+        ];
     }
 
-    public function testOrGte()
+    /**
+     * @param $id
+     * @param $args
+     * @param $expected
+     * @dataProvider providerTestOrGt
+     */
+    public function testOrGt($id, $args, $expected)
     {
-        $this->assertTrue(
-            $this->query()
-                ->eq('id', 3)
-                ->orGte('created_at', '2016-10-14')
-                ->exists()
-        );
-
-        $this->assertTrue(
-            $this->query()
-                ->eq('id', -2)
-                ->orGte('created_at', '2016-10-10')
-                ->exists()
-        );
-
-        $this->assertFalse(
-            $this->query()
-                ->eq('id', -2)
-                ->orGte('created_at', '2016-10-14')
-                ->exists()
-        );
+        $actual = $this->query()->eq('id', $id)->or(function (Where $where) use($args) {
+            $where->gt(...$args);
+        })->exists();
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testLt()
+    public function providerTestGte()
     {
-        $this->assertFalse(
-            $this->query()
-                ->lt('created_at', '0000-01-01')
-                ->exists()
-        );
-
-        $this->assertTrue(
-            $this->query()
-                ->lt('created_at', '9999-01-01')
-                ->exists()
-        );
+        return [
+            [['created_at', '2016-10-10'], true],
+            [['created_at', '2016-10-14'], false],
+        ];
     }
 
-    public function testOrLt()
+    /**
+     * @param $args
+     * @param $expected
+     * @dataProvider providerTestGte
+     */
+    public function testGte($args, $expected)
     {
-        $this->assertTrue(
-            $this->query()
-                ->eq('id', 1)
-                ->orLt('created_at', '0000-01-01')
-                ->exists()
-        );
-
-        $this->assertFalse(
-            $this->query()
-                ->eq('id', -1)
-                ->orLt('created_at', '0000-01-01')
-                ->exists()
-        );
-
-        $this->assertTrue(
-            $this->query()
-                ->eq('id', 9999)
-                ->orLt('created_at', '9999-01-01')
-                ->exists()
-        );
+        $actual = $this->query()->gte(...$args)->exists();
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testLte()
+    public function providerTestOrGte()
     {
-        $this->assertFalse(
-            $this->query()
-                ->lte('created_at', '2016-10-09')
-                ->exists()
-        );
-
-        $this->assertTrue(
-            $this->query()
-                ->lte('created_at', '2016-10-10')
-                ->exists()
-        );
-
-        $this->assertTrue(
-            $this->query()
-                ->lte('created_at', '2016-10-14')
-                ->exists()
-        );
+        return [
+            [3, ['created_at', '2016-10-14'], true],
+            [-2, ['created_at', '2016-10-10'], true],
+            [-2, ['created_at', '2016-10-14'], false],
+        ];
     }
 
-    public function testOrLte()
+    /**
+     * @param $id
+     * @param $args
+     * @param $expected
+     * @dataProvider providerTestOrGte
+     */
+    public function testOrGte($id, $args, $expected)
     {
-        $this->assertTrue(
-            $this->query()
-                ->eq('id', 3)
-                ->orLte('created_at', '2016-10-14')
-                ->exists()
-        );
-
-        $this->assertTrue(
-            $this->query()
-                ->eq('id', -2)
-                ->orLte('created_at', '2016-10-10')
-                ->exists()
-        );
-
-        $this->assertFalse(
-            $this->query()
-                ->eq('id', -2)
-                ->orLte('created_at', '2016-10-09')
-                ->exists()
-        );
+        $actual = $this->query()->eq('id', $id)->or(function (Where $where) use($args) {
+            $where->gte(...$args);
+        })->exists();
+        $this->assertEquals($expected, $actual);
     }
 
-    public function testLike()
+    public function providerTestLt()
     {
-        $this->assertEquals(4, $this->countByProfileNameOfLike('u%'));
-        $this->assertEquals(1, $this->countByProfileNameOfLike('%1'));
-        $this->assertEquals(1, $this->countByProfileNameOfLike('unknown1'));
-//        $this->assertEquals(1, $this->countByProfileNameOfLike('u+'));
-//        $this->assertEquals(1, $this->countByProfileNameOfLike('u%1'));
-//        $this->assertEquals(1, $this->countByProfileNameOfLike('%w%1'));
-//        $this->assertEquals(1, $this->countByProfileNameOfLike('u%w%1'));
-//        $this->assertEquals(1, $this->countByProfileNameOfLike('unknown%1'));
-//        $this->assertEquals(0, $this->countByProfileNameOfLike('w%1'));
-        $this->assertEquals(0, $this->countByProfileNameOfLike('%u'));
+        return [
+            [['created_at', '0000-01-01'], false],
+            [['created_at', '9999-01-01'], true]
+        ];
+    }
+
+    /**
+     * @param $args
+     * @param $expected
+     * @dataProvider providerTestLt
+     */
+    public function testLt($args, $expected)
+    {
+        $actual = $this->query()->lt(...$args)->exists();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function providerTestOrLt()
+    {
+        return [
+            [1, ['created_at', '0000-01-01'], true],
+            [-1, ['created_at', '0000-01-01'], false],
+            [9999, ['created_at', '9999-01-01'], true],
+        ];
+    }
+
+    /**
+     * @param $id
+     * @param $args
+     * @param $expected
+     * @dataProvider providerTestOrLt
+     */
+    public function testOrLt($id, $args, $expected)
+    {
+        $actual = $this->query()->eq('id', $id)->or(function (Where $where) use($args) {
+            $where->lt(...$args);
+        })->exists();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function providerTestLte()
+    {
+        return [
+            [['created_at', '2016-10-09'], false],
+            [['created_at', '2016-10-10'], true],
+            [['created_at', '2016-10-14'], true],
+        ];
+    }
+
+    /**
+     * @dataProvider providerTestLte
+     * @param $args
+     * @param $expected
+     */
+    public function testLte($args, $expected)
+    {
+        $actual = $this->query()->lte(...$args)->exists();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function providerTestOrLte()
+    {
+        return [
+            [3, ['created_at', '2016-10-14'], true],
+            [-2, ['created_at', '2016-10-10'], true],
+            [-2, ['created_at', '2016-10-09'], false]
+        ];
+    }
+
+    /**
+     * @dataProvider providerTestOrLte
+     * @param $id
+     * @param $args
+     * @param $expected
+     */
+    public function testOrLte($id, $args, $expected)
+    {
+        $bool = $this->query()->eq('id', $id)->or(function (Where $where) use($args) {
+            $where->lte(...$args);
+        })->exists();
+        $this->assertEquals($expected, $bool);
+    }
+
+    public function providerTestLike()
+    {
+        return [
+            ['u%', 4],
+            ['%1', 1],
+            ['unknown1', 1],
+            ['%u', 0]
+        ];
+    }
+
+    /**
+     * @param $text
+     * @param $expected
+     * @dataProvider providerTestLike
+     */
+    public function testLike($text, $expected)
+    {
+        $this->assertEquals($expected, $this->countByProfileNameOfLike($text));
     }
 
     public function testNotLike()
@@ -339,15 +394,12 @@ class ArrayQueryTest extends \PHPUnit_Framework_TestCase
         $this->assertNotEquals($len1, $len2);
     }
 
+    /**
+     * @expectedException \BadMethodCallException
+     */
     public function testUndefinedOperator()
     {
-        $expected = 'BadMethodCallException';
-        $exception = null;
-        try {
-            $this->query()->dummy(1, 2);
-        } catch (\Exception $exception) {}
-
-        $this->assertInstanceOf($expected, $exception);
+        $this->query()->dummy(1, 2);
     }
 
     private function query($fixture = 'users')
