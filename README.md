@@ -49,3 +49,41 @@ $aq->notEq('id', 1)->all(); // [['id' => 2, 'age' => 18]]
 $aq->eq('id', 1)->notEq('age', 18)->all(); // []
 $aq->notEq('id', -1)->all(); // [['id' => 1, 'age' => 18], ['id' => 2, 'age' => 18]]
 ```
+
+### in
+
+> Arguments
+```
+in(string $key, array $val);
+```
+
+> Source code
+```php
+$aq = new \Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1, 'age' => 18],
+    ['id' => 2, 'age' => 18],
+]);
+$aq->in('id', [1])->all(); // [['id' => 1, 'age' => 18]]
+$aq->in('id', [1, 2])->all(); // [['id' => 1, 'age' => 18], ['id' => 2, 'age' => 18]]
+$aq->in('id', [2, 3])->all(); // [['id' => 2, 'age' => 18]]
+$aq->in('id', [-1])->all(); // []
+```
+
+### notIn
+
+> Arguments
+```
+notIn(string $key, array $val);
+```
+
+> Source code
+```php
+$aq = new \Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1, 'age' => 18],
+    ['id' => 2, 'age' => 18],
+]);
+$aq->notIn('id', [1])->all(); // [['id' => 2, 'age' => 18]]
+$aq->notIn('id', [1, 2])->all(); // []
+$aq->notIn('id', [2, 3])->all(); // [['id' => 1, 'age' => 18]]
+$aq->notIn('id', [-1])->all(); // [['id' => 1, 'age' => 18], ['id' => 2, 'age' => 18]]
+```
