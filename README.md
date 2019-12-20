@@ -504,3 +504,29 @@ $aq->eq('id', 3)->map(function(array $item) {
     return $item['id'];
 }); // []
 ```
+
+## Setters
+
+### setDelimiter
+
+> Arguments
+
+```
+setDelimiter(string $delimiter);
+```
+
+> Source code
+
+```php
+$aq = new \Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1, 'options' => ['address' => 'x']],
+    ['id' => 2],
+]);
+
+$aq->eq('options.address', 'x')->exists(); // true
+
+$aq->setDelimiter('@');
+$aq->eq('options@address', 'x') // true;
+```
+
+### setResettable
