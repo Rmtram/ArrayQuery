@@ -3,10 +3,10 @@
 This library provides ORM-like Array filtering.
 
 # Contents
-- Initializations
+- [Initializations](#Initializations)
     - [constructor](#constructor)
     - [reset](#reset)
-- Operations
+- [Operations](#Operations)
     - [eq](#eq)
     - [notEq](#notEq)
     - [in](#in)
@@ -19,14 +19,14 @@ This library provides ORM-like Array filtering.
     - [lte](#lte)
     - [and](#and)
     - [or](#or)
-- Excecutions
+- [Excecutions](#Executions)
     - [generator](#generator)
     - [all](#all)
     - [one](#one)
     - [count](#count)
     - [exists](#exists)
     - [map](#map)
-- Setters
+- [Setters](#Setters)
     - [setDelimiter](#setDelimiter)
     - [setResettable](#setResettable)
 
