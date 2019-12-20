@@ -477,3 +477,30 @@ $aq->eq('id', 3)->exists(); // false
 ```
 
 ### map
+
+> Arguments
+
+```
+map(callable $callback(array $item))
+```
+
+> Source code
+
+```php
+$aq = new \Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1],
+    ['id' => 2],
+]);
+
+$aq->map(function(array $item) {
+    return $item['id'];
+}); // [1, 2]
+
+$aq->eq('id', 1)->map(function(array $item) {
+    return $item['id'];
+}); // [1]
+
+$aq->eq('id', 3)->map(function(array $item) {
+    return $item['id'];
+}); // []
+```
