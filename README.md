@@ -6,7 +6,7 @@ This library provides ORM-like Array filtering.
 
 ```php
 use Rmtram\ArrayQuery\ArrayQuery;
-use Rmtram\ArrayQuery\Where;
+use Rmtram\ArrayQuery\Queries\Where;
 
 $aq = new ArrayQuery([
     [
@@ -14,8 +14,9 @@ $aq = new ArrayQuery([
         'name' => 'hoge',
         'blog' => [
             'title' => 'hoge blog',
-            'category' => 'programming'
-            'url'   => '#hoge'
+            'category' => 'programming',
+            'url'   => '#hoge',
+            'end_date' => '2010-10-10',
         ]
     ],
     [
@@ -23,8 +24,9 @@ $aq = new ArrayQuery([
         'name' => 'fuga',
         'blog' => [
             'title' => 'fuga blog',
-            'category' => 'anime'
-            'url'   => '#fuga'
+            'category' => 'anime',
+            'url'   => '#fuga',
+            'end_date' => null
         ]
     ],
         [
@@ -32,16 +34,18 @@ $aq = new ArrayQuery([
         'name' => 'piyo',
         'blog' => [
             'title' => 'piyo blog',
-            'category' => 'anime'
-            'url'   => '#piyo'
+            'category' => 'anime',
+            'url'   => '#piyo',
+            'end_date' => '2010-10-14',
+
         ]
     ],
 ]);
 
 $results = $aq->in('blog.category', ['anime', 'programming'])
     ->and(function (Where $where) {
-        $where->eq('name' => 'fuga')->or(function (Where $where) {
-            $where->eq('id', 1)
+        $where->eq('blog.end_date', '2010-10-10')->or(function (Where $where) {
+            $where->null('blog.end_date');
         });
     })
     ->all(); // [['id' => 1, ...], ['id' => 2, ...]]
@@ -56,6 +60,8 @@ $results = $aq->in('blog.category', ['anime', 'programming'])
     - [notEq](#notEq)
     - [in](#in)
     - [notIn](#notIn)
+    - [null](#null)
+    - [notNull](#notNull)
     - [like](#like)
     - [notLike](#notLike)
     - [gt](#gt)
@@ -136,7 +142,7 @@ $aq->eq('id', 1)->count(); // 1
 $aq->eq('id', 2)->count(); // 0
 
 // state: eq('id', 2)
-$aq->reset()->('id', 2)->count(); // 1
+$aq->reset()->eq('id', 2)->count(); // 1
 ```
 
 ## Operations
@@ -220,6 +226,47 @@ $aq->notIn('id', [1])->all(); // [['id' => 2, 'age' => 18]]
 $aq->notIn('id', [1, 2])->all(); // []
 $aq->notIn('id', [2, 3])->all(); // [['id' => 1, 'age' => 18]]
 $aq->notIn('id', [-1])->all(); // [['id' => 1, 'age' => 18], ['id' => 2, 'age' => 18]]
+```
+
+### null
+
+> Arguments
+
+```
+null(string $key, bool $checkExistsKey = false)
+```
+
+> Source code
+
+```php
+$aq = new \Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1, 'address' => null],
+    ['id' => 2],
+    ['id' => 3, 'address' => 'x'],
+]);
+
+$aq->null('address')->all(); // [['id' => 1, 'address' => null], ['id' => 2]]
+$aq->null('address', true)->all(); // [['id' => 1, 'address' => null]]
+```
+
+### notNull
+
+> Arguments
+
+```
+null(string $key, bool $checkExistsKey = false)
+```
+
+> Source code
+
+```php
+$aq = new \Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1, 'address' => null],
+    ['id' => 2],
+    ['id' => 3, 'address' => 'x'],
+]);
+
+$aq->notNull('address')->all(); // [['id' => 3, 'address' => 'x']]
 ```
 
 ### like
@@ -434,7 +481,7 @@ $generator = $aq->eq('id', 1)->generator();
 
 // (Generator)[['id' => 1]]
 foreach ($generator as $item) {
-    echo $item['id'] // 1
+    echo $item['id']; // 1
 }
 ```
 
@@ -571,7 +618,7 @@ $aq = new \Rmtram\ArrayQuery\ArrayQuery([
 $aq->eq('options.address', 'x')->exists(); // true
 
 $aq->setDelimiter('@');
-$aq->eq('options@address', 'x') // true;
+$aq->eq('options@address', 'x'); // true;
 ```
 
 ### setResettable

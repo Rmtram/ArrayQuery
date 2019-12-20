@@ -391,6 +391,45 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(0, $len);
     }
 
+    public function providerTestNull()
+    {
+        return [
+            [['profile.sex'], 2],
+            [['profile.sex', true], 1],
+            [['profile.sex', false], 2],
+        ];
+    }
+
+    /**
+     * @param $args
+     * @param $expected
+     * @dataProvider providerTestNull
+     */
+    public function testNull($args, $expected)
+    {
+        $actual = $this->query()->null(...$args)->count();
+        $this->assertEquals($expected, $actual);
+    }
+
+    public function providerTestNotNull()
+    {
+        return [
+            ['profile.sex', 2],
+            ['profile.friend', 2],
+        ];
+    }
+
+    /**
+     * @param $arg
+     * @param $expected
+     * @dataProvider providerTestNotNull
+     */
+    public function testNotNull($arg, $expected)
+    {
+        $actual = $this->query()->notNull($arg)->count();
+        $this->assertEquals($expected, $actual);
+    }
+
     public function testReset()
     {
         $len1 = $this->query()->eq('id', 1)->count();

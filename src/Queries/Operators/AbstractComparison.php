@@ -34,19 +34,18 @@ abstract class AbstractComparison implements OperatorInterface
     }
 
     /**
-     * @param string $key
-     * @param mixed $val
-     * @param array $row
+     * @param Parameter $parameter
+     * @param array $item
      * @return bool
      * @throws InvalidArgumentException
      */
-    public function evaluate(string $key, $val, array $row): bool
+    public function evaluate(Parameter $parameter, array $item): bool
     {
-        $expected = $this->finder->find($key, $row);
+        $expected = $this->finder->find($parameter->getKey(), $item);
         if (is_null($expected)) {
             return false;
         }
-        return $this->compare($expected, $val, $this->operator);
+        return $this->compare($expected, $parameter->getVal(), $this->operator);
     }
 
 

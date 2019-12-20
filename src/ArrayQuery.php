@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery;
 
-use Rmtram\ArrayQuery\Exceptions\InvalidArgumentException;
 use Rmtram\ArrayQuery\Queries\Evaluator;
 use Rmtram\ArrayQuery\Queries\Finders\RecursiveFinder;
 use Rmtram\ArrayQuery\Queries\Where;
@@ -15,12 +14,14 @@ use Rmtram\ArrayQuery\Queries\Where;
  * @method $this notEq(string $key, mixed $val)
  * @method $this in(string $key, array $val)
  * @method $this notIn(string $key, array $val)
- * @method $this gt(string $key, int $val)
- * @method $this gte(string $key, int $val)
- * @method $this lt(string $key, int $val)
- * @method $this lte(string $key, int $val)
+ * @method $this gt(string $key, mixed $val)
+ * @method $this gte(string $key, mixed $val)
+ * @method $this lt(string $key, mixed $val)
+ * @method $this lte(string $key, mixed $val)
  * @method $this like(string $key, string $val)
  * @method $this notLike(string $key, string $val)
+ * @method $this null(string $key, bool $checkExistsKey = false)
+ * @method $this notNull(string $key)
  */
 class ArrayQuery
 {
@@ -171,7 +172,6 @@ class ArrayQuery
      * @param string $method
      * @param array $args
      * @return $this
-     * @throws InvalidArgumentException
      */
     public function __call(string $method, array $args): self
     {

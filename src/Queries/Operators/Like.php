@@ -10,17 +10,16 @@ namespace Rmtram\ArrayQuery\Queries\Operators;
 class Like extends AbstractLike
 {
     /**
-     * @param string $key
-     * @param string $val
-     * @param array $row
+     * @param Parameter $parameter
+     * @param array $item
      * @return bool
      */
-    public function evaluate(string $key, $val, array $row): bool
+    public function evaluate(Parameter $parameter, array $item): bool
     {
-        $expected = $this->finder->find($key, $row);
+        $expected = $this->finder->find($parameter->getKey(), $item);
         if (is_null($expected)) {
             return false;
         }
-        return $this->match($expected, $val);
+        return $this->match($expected, $parameter->getVal());
     }
 }

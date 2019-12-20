@@ -43,7 +43,7 @@ class RecursiveFinder implements FinderInterface
             return null;
         }
 
-        if (false === strpos($key, $this->delimiter)) {
+        if (strpos($key, $this->delimiter) === false) {
             return $this->pick($key, $item);
         }
 
@@ -61,10 +61,37 @@ class RecursiveFinder implements FinderInterface
     /**
      * @param string $key
      * @param array $item
+     * @return bool
+     */
+    public function existsKey(string $key, array $item): bool
+    {
+        if (empty($item)) {
+            return false;
+        }
+
+        if (strpos($key, $this->delimiter) === false) {
+            return array_key_exists($key, $item);
+        }
+
+        $keys = explode($this->delimiter, $key);
+
+        foreach ($keys as $k) {
+            if (is_array($item) === false || array_key_exists($k, $item) === false) {
+                return false;
+            }
+            $item = $item[$k];
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $key
+     * @param array $item
      * @return mixed|null
      */
     private function pick(string $key, array $item)
     {
-        return isset($item[$key]) ? $item[$key] : null;
+        return $item[$key] ?? null;
     }
 }
