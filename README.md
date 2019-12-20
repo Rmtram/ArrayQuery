@@ -2,6 +2,51 @@
 
 This library provides ORM-like Array filtering.
 
+# Usage
+
+```php
+use Rmtram\ArrayQuery\ArrayQuery;
+use Rmtram\ArrayQuery\Where;
+
+$aq = new ArrayQuery([
+    [
+        'id' => 1,
+        'name' => 'hoge',
+        'blog' => [
+            'title' => 'hoge blog',
+            'category' => 'programming'
+            'url'   => '#hoge'
+        ]
+    ],
+    [
+        'id' => 2,
+        'name' => 'fuga',
+        'blog' => [
+            'title' => 'fuga blog',
+            'category' => 'anime'
+            'url'   => '#fuga'
+        ]
+    ],
+        [
+        'id' => 3,
+        'name' => 'piyo',
+        'blog' => [
+            'title' => 'piyo blog',
+            'category' => 'anime'
+            'url'   => '#piyo'
+        ]
+    ],
+]);
+
+$results = $aq->in('blog.category', ['anime', 'programming'])
+    ->and(function (Where $where) {
+        $where->eq('name' => 'fuga')->or(function (Where $where) {
+            $where->eq('id', 1)
+        });
+    })
+    ->all(); // [['id' => 1, ...], ['id' => 2, ...]]
+```
+
 # Contents
 - [Initializations](#Initializations)
     - [constructor](#constructor)
