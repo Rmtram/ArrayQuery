@@ -73,7 +73,8 @@ $results = $aq->in('blog.category', ['anime', 'programming'])
 - [Excecutions](#Executions)
     - [generator](#generator)
     - [all](#all)
-    - [one](#one)
+    - [first](#first)
+    - [last](#last)
     - [count](#count)
     - [exists](#exists)
     - [map](#map)
@@ -505,12 +506,12 @@ $aq->all(); // (array)[['id' => 1], ['id' => 2]]
 $aq->eq('id', 2)->all(); // (array)[['id' => 2]]
 ```
 
-### one
+### first
 
 > Arguments
 
 ```
-one()
+first()
 ```
 
 > Source code
@@ -521,9 +522,29 @@ $aq = new \Rmtram\ArrayQuery\ArrayQuery([
     ['id' => 2],
 ]);
 
-$aq->one(); // (array)['id' => 1]
-$aq->eq('id', 2)->one(); // (array)['id' => 2]
-$aq->eq('id', 3)->one(); // null
+$aq->first(); // (array)['id' => 1]
+$aq->eq('id', 2)->first(); // (array)['id' => 2]
+$aq->eq('id', 3)->first(); // null
+```
+
+### last
+
+> Arguments
+
+```
+last()
+```
+
+> Source code
+
+```php
+$aq = new \Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1],
+    ['id' => 2],
+]);
+
+$aq->last();  // (array)['id' => 2]
+$aq->eq('id', 3)->last();  // null
 ```
 
 ### count

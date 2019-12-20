@@ -117,9 +117,22 @@ class ArrayQuery
     /**
      * @return array|null
      */
-    public function one(): ?array
+    public function first(): ?array
     {
         return $this->generator()->current();
+    }
+
+    /**
+     * @return array|null
+     */
+    public function last(): ?array
+    {
+        $generator = $this->generator();
+        if (!$generator->valid()) {
+            return null;
+        }
+        foreach ($generator as $item);
+        return $item;
     }
 
     /**
