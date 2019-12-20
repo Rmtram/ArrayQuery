@@ -530,3 +530,30 @@ $aq->eq('options@address', 'x') // true;
 ```
 
 ### setResettable
+
+> Arguments
+
+```
+setResettable(bool $resettable);
+```
+
+> Source code
+
+```php
+$aq = new \Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1],
+    ['id' => 2],
+]);
+
+$aq->eq('id', 1)->count(); // 1
+
+// state: eq('id', 2)
+$aq->eq('id', 2)->count(); // 1
+
+$aq->setResettable(false);
+
+$aq->eq('id', 1)->count(); // 1
+
+// state: eq('id', 1)->eq('id', 2)
+$aq->eq('id', 2)->count(); // 0
+```
