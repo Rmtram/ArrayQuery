@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery\Queries;
 
+use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use Rmtram\ArrayQuery\Queries\Finders\FinderInterface;
 use Rmtram\ArrayQuery\Queries\Operators\OperatorInterface;
+use Rmtram\ArrayQuery\Queries\Operators\Parameter;
 
 /**
  * Class Evaluator
@@ -70,10 +72,10 @@ class Evaluator
         if (empty($wheres)) {
             return self::EMPTY;
         }
-        foreach ($wheres as $w) {
-            [$key, $val, $method] = $w;
-            $operator = $this->getOperator($where, $method);
-            if (!$operator->evaluate($key, $val, $item)) {
+        /** @var Parameter $parameter */
+        foreach ($wheres as $parameter) {
+            $operator = $this->getOperator($where, $parameter->getMethod());
+            if (!$operator->evaluate($parameter, $item)) {
                 return self::NG;
             }
         }

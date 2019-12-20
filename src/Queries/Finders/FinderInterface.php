@@ -15,4 +15,11 @@ interface FinderInterface
      * @return array|null
      */
     public function find(string $key, array $item);
+
+    /**
+     * @param string $key
+     * @param array $item
+     * @return bool
+     */
+    public function existsKey(string $key, array $item): bool;
 }

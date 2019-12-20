@@ -3,12 +3,16 @@ declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery\Queries\Operators;
 
+use Rmtram\ArrayQuery\Exceptions\InvalidArgumentException;
+
 /**
- * Class NotLike
+ * Class NotNil
  * @package Rmtram\ArrayQuery\Queries\Operators
  */
-class NotLike extends AbstractLike
+class NotNil implements OperatorInterface
 {
+    use Findable;
+
     /**
      * @param Parameter $parameter
      * @param array $item
@@ -16,10 +20,6 @@ class NotLike extends AbstractLike
      */
     public function evaluate(Parameter $parameter, array $item): bool
     {
-        $expected = $this->finder->find($parameter->getKey(), $item);
-        if (is_null($expected)) {
-            return false;
-        }
-        return !$this->match($expected, $parameter->getVal());
+        return is_null($this->finder->find($parameter->getKey(), $item)) === false;
     }
 }

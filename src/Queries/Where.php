@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery\Queries;
 
-use Rmtram\ArrayQuery\Exceptions\InvalidArgumentException;
 use Rmtram\ArrayQuery\Queries\Operators\Equal;
 use Rmtram\ArrayQuery\Queries\Operators\GreaterThan;
 use Rmtram\ArrayQuery\Queries\Operators\GreaterThanOrEqual;
@@ -11,9 +10,12 @@ use Rmtram\ArrayQuery\Queries\Operators\In;
 use Rmtram\ArrayQuery\Queries\Operators\LessThan;
 use Rmtram\ArrayQuery\Queries\Operators\LessThanOrEqual;
 use Rmtram\ArrayQuery\Queries\Operators\Like;
+use Rmtram\ArrayQuery\Queries\Operators\Nil;
 use Rmtram\ArrayQuery\Queries\Operators\NotEqual;
 use Rmtram\ArrayQuery\Queries\Operators\NotIn;
 use Rmtram\ArrayQuery\Queries\Operators\NotLike;
+use Rmtram\ArrayQuery\Queries\Operators\NotNil;
+use Rmtram\ArrayQuery\Queries\Operators\Parameter;
 
 /**
  * Class Where
@@ -22,12 +24,14 @@ use Rmtram\ArrayQuery\Queries\Operators\NotLike;
  * @method $this notEq(string $key, mixed $val)
  * @method $this in(string $key, array $val)
  * @method $this notIn(string $key, array $val)
- * @method $this gt(string $key, int $val)
- * @method $this gte(string $key, int $val)
- * @method $this lt(string $key, int $val)
- * @method $this lte(string $key, int $val)
+ * @method $this gt(string $key, mixed $val)
+ * @method $this gte(string $key, mixed $val)
+ * @method $this lt(string $key, mixed $val)
+ * @method $this lte(string $key, mixed $val)
  * @method $this like(string $key, string $val)
  * @method $this notLike(string $key, string $val)
+ * @method $this null(string $key, bool $checkExistsKey = false)
+ * @method $this notNull(string $key)
  */
 class Where
 {
@@ -62,7 +66,9 @@ class Where
         'like' => Like::class,
         'notLike' => NotLike::class,
         'in' => In::class,
-        'notIn' => NotIn::class
+        'notIn' => NotIn::class,
+        'null' => Nil::class,
+        'notNull' => NotNil::class,
     ];
 
     /**
@@ -118,24 +124,16 @@ class Where
     }
 
     /**
-     * @param string $name
+     * @param string $method
      * @param array $args
      * @return $this
-     * @throws InvalidArgumentException
      */
-    public function __call(string $name, array $args)
+    public function __call(string $method, array $args): self
     {
-        $count = count($args);
-        if ($count !== 2) {
-            throw new InvalidArgumentException(sprintf(
-                'expects at 2 parameters, %d given',
-                $count
-            ));
+        if (!isset(self::OPERATOR_CLASSES[$method])) {
+            throw new \BadMethodCallException('undefined method at ' . $method);
         }
-        if (!isset(self::OPERATOR_CLASSES[$name])) {
-            throw new \BadMethodCallException('undefined method at ' . $name);
-        }
-        $this->wheres[] = [$args[0], $args[1], $name];
+        $this->wheres[] = new Parameter($method, ...$args);
         return $this;
     }
 
