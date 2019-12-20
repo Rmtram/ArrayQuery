@@ -32,7 +32,7 @@ This library provides ORM-like Array filtering.
 
 # Methods
 
-## Initialization
+## Initializations
 
 ### constructor
 
