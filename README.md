@@ -43,11 +43,13 @@ This library provides ORM-like Array filtering.
 ### eq
 
 > Arguments
+
 ```
 eq(string $key, mixed $val);
 ```
 
 > Source code
+
 ```php
 $aq = new \Rmtram\ArrayQuery\ArrayQuery([
     ['id' => 1, 'age' => 18],
@@ -60,11 +62,13 @@ $aq->eq('id', -1)->all(); // []
 ### notEq
 
 > Arguments
+
 ```
 notEq(string $key, mixed $val);
 ```
 
 > Source code
+
 ```php
 $aq = new \Rmtram\ArrayQuery\ArrayQuery([
     ['id' => 1, 'age' => 18],
@@ -78,11 +82,13 @@ $aq->notEq('id', -1)->all(); // [['id' => 1, 'age' => 18], ['id' => 2, 'age' => 
 ### in
 
 > Arguments
+
 ```
 in(string $key, array $val);
 ```
 
 > Source code
+
 ```php
 $aq = new \Rmtram\ArrayQuery\ArrayQuery([
     ['id' => 1, 'age' => 18],
@@ -97,11 +103,13 @@ $aq->in('id', [-1])->all(); // []
 ### notIn
 
 > Arguments
+
 ```
 notIn(string $key, array $val);
 ```
 
 > Source code
+
 ```php
 $aq = new \Rmtram\ArrayQuery\ArrayQuery([
     ['id' => 1, 'age' => 18],
@@ -116,11 +124,13 @@ $aq->notIn('id', [-1])->all(); // [['id' => 1, 'age' => 18], ['id' => 2, 'age' =
 ### like
 
 > Arguments
+
 ```
 like(string $key, string $val);
 ```
 
 > Source code
+
 ```php
 $aq = new \Rmtram\ArrayQuery\ArrayQuery([
     ['id' => 1, 'name' => 'hoge'],
@@ -134,11 +144,13 @@ $aq->like('name', 'nothing')->all(); // []
 ### notLike
 
 > Arguments
+
 ```
 notLike(string $key, string $val);
 ```
 
 > Source code
+
 ```php
 $aq = new \Rmtram\ArrayQuery\ArrayQuery([
     ['id' => 1, 'name' => 'hoge'],
@@ -248,11 +260,13 @@ $aq->lte('age', 17)->all(); // [['id' => 2, 'age' => 16], ['id' => 2, 'age' => 1
 ### and
 
 > Arguments
+
 ```
 and(callable $callback(\Rmtram\ArrayQuery\Queries\Where $where))
 ```
 
 > Source code
+
 ```php
 $aq = new \Rmtram\ArrayQuery\ArrayQuery([
     ['id' => 1, 'status' => 'active', 'age' => 18],
@@ -274,11 +288,13 @@ $aq->eq('status', 'active')
 ### or
 
 > Arguments
+
 ```
 or(callable $callback(\Rmtram\ArrayQuery\Queries\Where $where))
 ```
 
 > Source code
+
 ```php
 $aq = new \Rmtram\ArrayQuery\ArrayQuery([
     ['id' => 1, 'status' => 'active', 'age' => 18],
