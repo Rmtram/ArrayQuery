@@ -36,6 +36,36 @@ This library provides ORM-like Array filtering.
 
 ### constructor
 
+> Arguments
+
+```
+constructor(array $items, bool $resettable = true);
+```
+
+> Source code
+
+```php
+// resettable = true (default)
+$aq = new Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1],
+    ['id' => 2],
+]);
+
+$aq->eq('id', 1)->count(); // 1
+// state: eq('id', 2)->count();
+$aq->eq('id', 2)->count(); // 1
+
+// resettable = false
+$aq = new Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1],
+    ['id' => 2],
+], false);
+
+$aq->eq('id', 1)->count(); // 1
+// state: eq('id', 1)->eq('id', 2)->count();
+$aq->eq('id', 2)->count(); // 0
+```
+
 ### reset
 
 ## Operations
