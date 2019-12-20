@@ -371,6 +371,28 @@ $aq->eq('id', 1)
 
 ### generator
 
+> Arguments
+
+```
+generator()
+```
+
+> Source code
+
+```php
+$aq = new \Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1],
+    ['id' => 2],
+]);
+
+$generator = $aq->eq('id', 1)->generator();
+
+// [['id' => 1]]
+foreach ($generator as $item) {
+    echo $item['id'] // 1
+}
+```
+
 ### all
 
 ### one
