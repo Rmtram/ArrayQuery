@@ -146,7 +146,7 @@ $aq = new \Rmtram\ArrayQuery\ArrayQuery([
     ['id' => 3, 'age' => 17],
 ]);
 
-$aq->gt('age', 14)->all(); // ['id' => 2, 'age' => 16], ['id' => 2, 'age' => 16], ['id' => 3, 'age' => 17]]
+$aq->gt('age', 14)->all(); // [['id' => 2, 'age' => 16], ['id' => 2, 'age' => 16], ['id' => 3, 'age' => 17]]
 $aq->gt('age', 15)->all(); // [['id' => 2, 'age' => 16], ['id' => 3, 'age' => 17]]
 $aq->gt('age', 16)->all(); // [['id' => 3, 'age' => 17]]
 $aq->gt('age', 17)->all(); // []
@@ -170,7 +170,7 @@ $aq = new \Rmtram\ArrayQuery\ArrayQuery([
     ['id' => 3, 'age' => 17],
 ]);
 
-$aq->gte('age', 15)->all(); // ['id' => 2, 'age' => 16], ['id' => 2, 'age' => 16], ['id' => 3, 'age' => 17]]
+$aq->gte('age', 15)->all(); // [['id' => 2, 'age' => 16], ['id' => 2, 'age' => 16], ['id' => 3, 'age' => 17]]
 $aq->gte('age', 16)->all(); // [['id' => 2, 'age' => 16], ['id' => 3, 'age' => 17]]
 $aq->gte('age', 17)->all(); // [['id' => 3, 'age' => 17]]
 $aq->gte('age', 18)->all(); // []
@@ -197,7 +197,7 @@ $aq = new \Rmtram\ArrayQuery\ArrayQuery([
 $aq->lt('age', 15)->all(); // []
 $aq->lt('age', 16)->all(); // [['id' => 3, 'age' => 17]]
 $aq->lt('age', 17)->all(); // [['id' => 2, 'age' => 16], ['id' => 3, 'age' => 17]]
-$aq->lt('age', 18)->all(); // ['id' => 2, 'age' => 16], ['id' => 2, 'age' => 16], ['id' => 3, 'age' => 17]]
+$aq->lt('age', 18)->all(); // [['id' => 2, 'age' => 16], ['id' => 2, 'age' => 16], ['id' => 3, 'age' => 17]]
 ```
 
 ### lte
@@ -221,7 +221,7 @@ $aq = new \Rmtram\ArrayQuery\ArrayQuery([
 $aq->lte('age', 14)->all(); // []
 $aq->lte('age', 15)->all(); // [['id' => 3, 'age' => 17]]
 $aq->lte('age', 16)->all(); // [['id' => 2, 'age' => 16], ['id' => 3, 'age' => 17]]
-$aq->lte('age', 17)->all(); // ['id' => 2, 'age' => 16], ['id' => 2, 'age' => 16], ['id' => 3, 'age' => 17]]
+$aq->lte('age', 17)->all(); // [['id' => 2, 'age' => 16], ['id' => 2, 'age' => 16], ['id' => 3, 'age' => 17]]
 ```
 
 ### and
