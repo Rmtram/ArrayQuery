@@ -28,16 +28,28 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(array(), $actual);
     }
 
-    public function testOne()
+    public function testFirst()
     {
-        $actual = $this->query()->one();
+        $actual = $this->query()->first();
         $this->assertEquals($this->fixtures['users'][0], $actual);
     }
 
-    public function testOneToEmptyResult()
+    public function testFirstForEmpty()
     {
-        $actual = $this->query()->eq('id', -1)->one();
-        $this->assertEquals(null, $actual);
+        $actual = $this->query()->eq('id', -1)->first();
+        $this->assertNull($actual);
+    }
+
+    public function testLast()
+    {
+        $actual = $this->query()->last();
+        $this->assertEquals($this->fixtures['users'][count($this->fixtures['users']) - 1], $actual);
+    }
+
+    public function testLastForEmpty()
+    {
+        $actual = $this->query()->eq('id', -1)->last();
+        $this->assertNull($actual);
     }
 
     public function testExists()
