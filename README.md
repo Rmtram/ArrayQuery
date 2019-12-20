@@ -3,7 +3,7 @@
 This library provides ORM-like Array filtering.
 
 # Contents
-- Initialization
+- Initializations
     - [constructor](#constructor)
     - [reset](#reset)
 - Operations
