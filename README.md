@@ -415,6 +415,25 @@ $aq->eq('id', 2)->all(); // (array)[['id' => 2]]
 
 ### one
 
+> Arguments
+
+```
+one()
+```
+
+> Source code
+
+```php
+$aq = new \Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1],
+    ['id' => 2],
+]);
+
+$aq->one(); // (array)['id' => 1]
+$aq->eq('id', 2)->one(); // (array)['id' => 2]
+$aq->eq('id', 3)->one(); // null
+```
+
 ### count
 
 ### exists
