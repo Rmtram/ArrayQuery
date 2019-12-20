@@ -3,6 +3,7 @@
 This library provides ORM-like Array filtering.
 
 ## Contents
+- [constructor](#constructor)
 - Operations
     - [eq](#eq)
     - [notEq](#notEq)
@@ -16,7 +17,18 @@ This library provides ORM-like Array filtering.
     - [lte](#lte)
     - [and](#and)
     - [or](#or)
-    
+- Excecutions
+    - [generator](#generator)
+    - [all](#all)
+    - [one](#one)
+    - [count](#count)
+    - [exists](#exists)
+    - [map](#map)
+    - [reset](#reset)
+- Setters
+    - [setDelimiter](#setDelimiter)
+    - [setResettable](#setResettable)
+
 ## Methods
 
 ### eq
