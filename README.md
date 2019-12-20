@@ -2,8 +2,10 @@
 
 This library provides ORM-like Array filtering.
 
-## Contents
-- [constructor](#constructor)
+# Contents
+- Initialization
+    - [constructor](#constructor)
+    - [reset](#reset)
 - Operations
     - [eq](#eq)
     - [notEq](#notEq)
@@ -24,12 +26,19 @@ This library provides ORM-like Array filtering.
     - [count](#count)
     - [exists](#exists)
     - [map](#map)
-    - [reset](#reset)
 - Setters
     - [setDelimiter](#setDelimiter)
     - [setResettable](#setResettable)
 
-## Methods
+# Methods
+
+## Initialization
+
+### constructor
+
+### reset
+
+## Operations
 
 ### eq
 
@@ -285,3 +294,17 @@ $aq->eq('id', 1)
     //     ['id' => 2, 'status' => 'active', 'age' => 20]
     // ]
 ```
+
+## Executions
+
+### generator
+
+### all
+
+### one
+
+### count
+
+### exists
+
+### map
