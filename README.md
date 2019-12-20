@@ -123,3 +123,53 @@ $aq->notLike('name', 'h%')->all(); // [['id' => 2, 'name' => 'fuga']]
 $aq->notLike('name', '%g%')->all(); // []
 $aq->notLike('name', 'nothing')->all(); // [['id' => 1, 'name' => 'hoge'], ['id' => 2, 'name' => 'fuga']]
 ```
+
+### and
+
+> Arguments
+```
+and(callable $callback(\Rmtram\ArrayQuery\Queries\Where $where))
+```
+
+> Source code
+```php
+$aq = new \Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1, 'status' => 'active', 'age' => 18],
+    ['id' => 2, 'status' => 'active', 'age' => 20],
+    ['id' => 3, 'status' => 'active', 'age' => 19],
+]);
+$aq->eq('status', 'active')
+    ->and(function (\Rmtram\ArrayQuery\Queries\Where $where) {
+        $where->eq('id', 1)->or(function (\Rmtram\ArrayQuery\Queries\Where $where) {
+            $where->eq('age', 19);
+        });
+    })->all(); 
+    // [
+    //     ['id' => 1, 'status' => 'active', 'age' => 18],
+    //     ['id' => 3, 'status' => 'active', 'age' => 19]
+    // ]
+```
+
+### or
+
+> Arguments
+```
+or(callable $callback(\Rmtram\ArrayQuery\Queries\Where $where))
+```
+
+> Source code
+```php
+$aq = new \Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1, 'status' => 'active', 'age' => 18],
+    ['id' => 2, 'status' => 'active', 'age' => 20],
+    ['id' => 3, 'status' => 'active', 'age' => 19],
+]);
+$aq->eq('id', 1)
+    ->or(function (\Rmtram\ArrayQuery\Queries\Where $where) {
+        $where->eq('age', 20);
+    })->all(); 
+    // [
+    //     ['id' => 1, 'status' => 'active', 'age' => 18],
+    //     ['id' => 2, 'status' => 'active', 'age' => 20]
+    // ]
+```
