@@ -436,6 +436,25 @@ $aq->eq('id', 3)->one(); // null
 
 ### count
 
+> Arguments
+
+```
+count()
+```
+
+> Source code
+
+```php
+$aq = new \Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1],
+    ['id' => 2],
+]);
+
+$aq->count(); // 2
+$aq->eq('id', 2)->count(); // 1
+$aq->eq('id', 3)->count(); // 0
+```
+
 ### exists
 
 ### map
