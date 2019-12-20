@@ -52,7 +52,8 @@ $aq = new Rmtram\ArrayQuery\ArrayQuery([
 ]);
 
 $aq->eq('id', 1)->count(); // 1
-// state: eq('id', 2)->count();
+
+// state: eq('id', 2)
 $aq->eq('id', 2)->count(); // 1
 
 // resettable = false
@@ -62,11 +63,36 @@ $aq = new Rmtram\ArrayQuery\ArrayQuery([
 ], false);
 
 $aq->eq('id', 1)->count(); // 1
-// state: eq('id', 1)->eq('id', 2)->count();
+
+// state: eq('id', 1)->eq('id', 2)
 $aq->eq('id', 2)->count(); // 0
 ```
 
 ### reset
+
+> Arguments
+
+```
+reset()
+```
+
+> Source code
+
+```php
+// resettable = false
+$aq = new Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1],
+    ['id' => 2],
+], false);
+
+$aq->eq('id', 1)->count(); // 1
+
+// state: eq('id', 1)->eq('id', 2)
+$aq->eq('id', 2)->count(); // 0
+
+// state: eq('id', 2)
+$aq->reset()->('id', 2)->count(); // 1
+```
 
 ## Operations
 
