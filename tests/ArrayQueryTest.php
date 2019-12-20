@@ -46,6 +46,24 @@ class ArrayQueryTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($this->fixtures['users'][count($this->fixtures['users']) - 1], $actual);
     }
 
+    public function testPluck()
+    {
+        $actual = $this->query()->eq('id', 1)->pluck(['id', 'created_at']);
+        $this->assertEquals([['id' => 1, 'created_at' => '2016-10-10']], $actual);
+    }
+
+    public function testPluckFirst()
+    {
+        $actual = $this->query()->pluckFirst(['id']);
+        $this->assertEquals(['id' => 1], $actual);
+    }
+
+    public function testPluckLast()
+    {
+        $actual = $this->query()->pluckLast(['id']);
+        $this->assertEquals(['id' => 4], $actual);
+    }
+
     public function testLastForEmpty()
     {
         $actual = $this->query()->eq('id', -1)->last();
