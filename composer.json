@@ -1,11 +1,14 @@
 {
+  "version": "1.0.0",
   "name": "rmtram/array-query",
   "type": "library",
   "description": "Array query",
   "keywords": [
     "array query",
     "query",
-    "array"
+    "array",
+    "array filter",
+    "filter"
   ],
   "homepage": "https://github.com/Rmtram/ArrayQuery",
   "support": {
