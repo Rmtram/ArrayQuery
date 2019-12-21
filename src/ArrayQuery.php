@@ -144,19 +144,6 @@ class ArrayQuery
     }
 
     /**
-     * @param callable $callback
-     * @return array
-     */
-    public function map(callable $callback)
-    {
-        $items = [];
-        foreach ($this->generator() as $item) {
-            $items[] = $callback($item);
-        }
-        return $items;
-    }
-
-    /**
      * @return int
      */
     public function count(): int
@@ -170,6 +157,53 @@ class ArrayQuery
     public function exists(): bool
     {
         return $this->generator()->valid();
+    }
+
+    /**
+     * @param callable $callback
+     * @return array
+     */
+    public function map(callable $callback)
+    {
+        $items = [];
+        foreach ($this->generator() as $item) {
+            $items[] = $callback($item);
+        }
+        return $items;
+    }
+
+    /**
+     * @param array $keys
+     * @return array
+     */
+    public function pluck(array $keys): array
+    {
+        $keys = array_flip($keys);
+        $items = [];
+        foreach ($this->generator() as $item) {
+            $items[] = array_intersect_key($item, $keys);
+        }
+        return $items;
+    }
+
+    /**
+     * @param array $keys
+     * @return array|null
+     */
+    public function pluckFirst(array $keys): ?array
+    {
+        $item = $this->first();
+        return !is_null($item) ? array_intersect_key($item, array_flip($keys)) : null;
+    }
+
+    /**
+     * @param array $keys
+     * @return array|null
+     */
+    public function pluckLast(array $keys): ?array
+    {
+        $item = $this->last();
+        return !is_null($item) ? array_intersect_key($item, array_flip($keys)) : null;
     }
 
     /**

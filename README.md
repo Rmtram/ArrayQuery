@@ -70,7 +70,7 @@ $results = $aq->in('blog.category', ['anime', 'programming'])
     - [lte](#lte)
     - [and](#and)
     - [or](#or)
-- [Excecutions](#Executions)
+- [Executions](#Executions)
     - [generator](#generator)
     - [all](#all)
     - [first](#first)
@@ -78,6 +78,9 @@ $results = $aq->in('blog.category', ['anime', 'programming'])
     - [count](#count)
     - [exists](#exists)
     - [map](#map)
+    - [pluck](#pluck)
+    - [pluckFirst](#pluckFirst)
+    - [pluckLast](#pluckLast)
 - [Setters](#Setters)
     - [setDelimiter](#setDelimiter)
     - [setResettable](#setResettable)
@@ -616,6 +619,68 @@ $aq->eq('id', 1)->map(function(array $item) {
 $aq->eq('id', 3)->map(function(array $item) {
     return $item['id'];
 }); // []
+```
+
+### pluck
+
+> Arguments
+
+```
+pluck(array $keys)
+```
+
+> Source code
+
+```php
+$aq = new Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1, 'age' => 1, 'address' => 'a'],
+    ['id' => 2, 'age' => 2, 'address' => 'b'],
+    ['id' => 3, 'age' => 3, 'address' => 'c'],
+]);
+
+$aq->pluck(['id', 'age']); // [['id' => 1, 'age' => 1], ['id' => 2, 'age' => 2], ['id' => 3, 'age' => 3]]
+```
+
+### pluckFirst
+
+> Arguments
+
+```
+pluckFirst(array $keys)
+```
+
+> Source code
+
+```php
+$aq = new Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1, 'age' => 1, 'address' => 'a'],
+    ['id' => 2, 'age' => 2, 'address' => 'b'],
+    ['id' => 3, 'age' => 3, 'address' => 'c'],
+]);
+
+$aq->pluckFirst(['id', 'age']); // ['id' => 1, 'age' => 1]
+$aq->eq('id', -1)->pluckFirst(['id', 'age']); // null
+```
+
+### pluckLast
+
+> Arguments
+
+```
+pluckLast(array $keys)
+```
+
+> Source code
+
+```php
+$aq = new Rmtram\ArrayQuery\ArrayQuery([
+    ['id' => 1, 'age' => 1, 'address' => 'a'],
+    ['id' => 2, 'age' => 2, 'address' => 'b'],
+    ['id' => 3, 'age' => 3, 'address' => 'c'],
+]);
+
+$aq->pluckLast(['id', 'age']); // ['id' => 3, 'age' => 3]
+$aq->eq('id', -1)->pluckFirst(['id', 'age']); // null
 ```
 
 ## Setters
