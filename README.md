@@ -1,4 +1,7 @@
 [![Build Status](https://travis-ci.org/Rmtram/ArrayQuery.svg)](https://travis-ci.org/Rmtram/ArrayQuery)
+[![Latest Stable Version](https://poser.pugx.org/rmtram/array-query/v/stable)](https://packagist.org/packages/rmtram/array-query)
+[![Total Downloads](https://poser.pugx.org/rmtram/array-query/downloads)](https://packagist.org/packages/rmtram/array-query)
+[![License](https://poser.pugx.org/rmtram/array-query/license)](https://packagist.org/packages/rmtram/array-query)
 
 # ArrayQuery
 
