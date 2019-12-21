@@ -163,7 +163,7 @@ class ArrayQuery
      * @param callable $callback
      * @return array
      */
-    public function map(callable $callback)
+    public function map(callable $callback): array
     {
         $items = [];
         foreach ($this->generator() as $item) {
