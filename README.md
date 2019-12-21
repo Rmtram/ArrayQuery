@@ -743,3 +743,6 @@ $aq->eq('id', 1)->count(); // 1
 // state: eq('id', 1)->eq('id', 2)
 $aq->eq('id', 2)->count(); // 0
 ```
+
+# LICENSE
+MIT
