@@ -744,5 +744,10 @@ $aq->eq('id', 1)->count(); // 1
 $aq->eq('id', 2)->count(); // 0
 ```
 
+# Support versions
+- 7.2
+- 7.3
+- 7.4
+
 # LICENSE
 MIT
