@@ -1,6 +1,14 @@
+[![Build Status](https://travis-ci.org/Rmtram/ArrayQuery.svg)](https://travis-ci.org/Rmtram/ArrayQuery)
+
 # ArrayQuery
 
 This library provides ORM-like Array filtering.
+
+## Install
+
+```
+$ composer require rmtram/array-query
+```
 
 # Usage
 
