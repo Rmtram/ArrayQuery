@@ -91,10 +91,10 @@ $results = $aq->in('blog.category', ['anime', 'programming'])
 
 ### constructor
 
-> Arguments
+> Definition
 
 ```
-constructor(array $items, bool $resettable = true);
+constructor(array $items, bool $resettable = true)
 ```
 
 > Source code
@@ -125,10 +125,10 @@ $aq->eq('id', 2)->count(); // 0
 
 ### reset
 
-> Arguments
+> Definition
 
 ```
-reset()
+reset(): self
 ```
 
 > Source code
@@ -153,10 +153,10 @@ $aq->reset()->eq('id', 2)->count(); // 1
 
 ### eq
 
-> Arguments
+> Definition
 
 ```
-eq(string $key, mixed $val);
+eq(string $key, mixed $val): self
 ```
 
 > Source code
@@ -172,10 +172,10 @@ $aq->eq('id', -1)->all(); // []
 
 ### notEq
 
-> Arguments
+> Definition
 
 ```
-notEq(string $key, mixed $val);
+notEq(string $key, mixed $val): self
 ```
 
 > Source code
@@ -192,10 +192,10 @@ $aq->notEq('id', -1)->all(); // [['id' => 1, 'age' => 18], ['id' => 2, 'age' => 
 
 ### in
 
-> Arguments
+> Definition
 
 ```
-in(string $key, array $val);
+in(string $key, array $val): self
 ```
 
 > Source code
@@ -213,10 +213,10 @@ $aq->in('id', [-1])->all(); // []
 
 ### notIn
 
-> Arguments
+> Definition
 
 ```
-notIn(string $key, array $val);
+notIn(string $key, array $val): self
 ```
 
 > Source code
@@ -234,10 +234,10 @@ $aq->notIn('id', [-1])->all(); // [['id' => 1, 'age' => 18], ['id' => 2, 'age' =
 
 ### null
 
-> Arguments
+> Definition
 
 ```
-null(string $key, bool $checkExistsKey = false)
+null(string $key, bool $checkExistsKey = false): self
 ```
 
 > Source code
@@ -255,10 +255,10 @@ $aq->null('address', true)->all(); // [['id' => 1, 'address' => null]]
 
 ### notNull
 
-> Arguments
+> Definition
 
 ```
-null(string $key, bool $checkExistsKey = false)
+notNull(string $key): self
 ```
 
 > Source code
@@ -275,10 +275,10 @@ $aq->notNull('address')->all(); // [['id' => 3, 'address' => 'x']]
 
 ### like
 
-> Arguments
+> Definition
 
 ```
-like(string $key, string $val);
+like(string $key, string $val): self
 ```
 
 > Source code
@@ -295,10 +295,10 @@ $aq->like('name', 'nothing')->all(); // []
 
 ### notLike
 
-> Arguments
+> Definition
 
 ```
-notLike(string $key, string $val);
+notLike(string $key, string $val): self
 ```
 
 > Source code
@@ -316,10 +316,10 @@ $aq->notLike('name', 'nothing')->all(); // [['id' => 1, 'name' => 'hoge'], ['id'
 ### gt
 `gt` is an alias for `greater than`, compare `a > b`.
 
-> Arguments
+> Definition
 
 ```
-gt(string $key, mixed $val)
+gt(string $key, mixed $val): self
 ```
 
 > Source code
@@ -340,10 +340,10 @@ $aq->gt('age', 17)->all(); // []
 ### gte
 `gte` is an alias for `greater equal than`, compare `a >= b`.
 
-> Arguments
+> Definition
 
 ```
-gte(string $key, mixed $val)
+gte(string $key, mixed $val): self
 ```
 
 > Source code
@@ -364,10 +364,10 @@ $aq->gte('age', 18)->all(); // []
 ### lt
 `lt` is an alias for `less than`, compare `a < b`.
 
-> Arguments
+> Definition
 
 ```
-lt(string $key, mixed $val)
+lt(string $key, mixed $val): self
 ```
 
 > Source code
@@ -388,10 +388,10 @@ $aq->lt('age', 18)->all(); // [['id' => 2, 'age' => 16], ['id' => 2, 'age' => 16
 ### lte
 `lte` is an alias for `less equal than`, compare `a < b`.
 
-> Arguments
+> Definition
 
 ```
-lte(string $key, mixed $val)
+lte(string $key, mixed $val): self
 ```
 
 > Source code
@@ -411,10 +411,10 @@ $aq->lte('age', 17)->all(); // [['id' => 2, 'age' => 16], ['id' => 2, 'age' => 1
 
 ### and
 
-> Arguments
+> Definition
 
 ```
-and(callable $callback(\Rmtram\ArrayQuery\Queries\Where $where))
+and(callable $callback(\Rmtram\ArrayQuery\Queries\Where $where)): self
 ```
 
 > Source code
@@ -439,10 +439,10 @@ $aq->eq('status', 'active')
 
 ### or
 
-> Arguments
+> Definition
 
 ```
-or(callable $callback(\Rmtram\ArrayQuery\Queries\Where $where))
+or(callable $callback(\Rmtram\ArrayQuery\Queries\Where $where)): self
 ```
 
 > Source code
@@ -467,10 +467,10 @@ $aq->eq('id', 1)
 
 ### generator
 
-> Arguments
+> Definition
 
 ```
-generator()
+generator(): Generator
 ```
 
 > Source code
@@ -491,10 +491,10 @@ foreach ($generator as $item) {
 
 ### all
 
-> Arguments
+> Definition
 
 ```
-all()
+all(): array
 ```
 
 > Source code
@@ -511,10 +511,10 @@ $aq->eq('id', 2)->all(); // (array)[['id' => 2]]
 
 ### first
 
-> Arguments
+> Definition
 
 ```
-first()
+first(): ?array
 ```
 
 > Source code
@@ -532,10 +532,10 @@ $aq->eq('id', 3)->first(); // null
 
 ### last
 
-> Arguments
+> Definition
 
 ```
-last()
+last(): ?array
 ```
 
 > Source code
@@ -552,10 +552,10 @@ $aq->eq('id', 3)->last();  // null
 
 ### count
 
-> Arguments
+> Definition
 
 ```
-count()
+count(): int
 ```
 
 > Source code
@@ -573,10 +573,10 @@ $aq->eq('id', 3)->count(); // 0
 
 ### exists
 
-> Arguments
+> Definition
 
 ```
-exists()
+exists(): bool
 ```
 
 > Source code
@@ -594,10 +594,10 @@ $aq->eq('id', 3)->exists(); // false
 
 ### map
 
-> Arguments
+> Definition
 
 ```
-map(callable $callback(array $item))
+map(callable $callback(array $item)): array
 ```
 
 > Source code
@@ -623,10 +623,10 @@ $aq->eq('id', 3)->map(function(array $item) {
 
 ### pluck
 
-> Arguments
+> Definition
 
 ```
-pluck(array $keys)
+pluck(array $keys): array
 ```
 
 > Source code
@@ -643,10 +643,10 @@ $aq->pluck(['id', 'age']); // [['id' => 1, 'age' => 1], ['id' => 2, 'age' => 2],
 
 ### pluckFirst
 
-> Arguments
+> Definition
 
 ```
-pluckFirst(array $keys)
+pluckFirst(array $keys): ?array
 ```
 
 > Source code
@@ -664,10 +664,10 @@ $aq->eq('id', -1)->pluckFirst(['id', 'age']); // null
 
 ### pluckLast
 
-> Arguments
+> Definition
 
 ```
-pluckLast(array $keys)
+pluckLast(array $keys): ?array
 ```
 
 > Source code
@@ -687,10 +687,10 @@ $aq->eq('id', -1)->pluckFirst(['id', 'age']); // null
 
 ### setDelimiter
 
-> Arguments
+> Definition
 
 ```
-setDelimiter(string $delimiter);
+setDelimiter(string $delimiter): self
 ```
 
 > Source code
@@ -709,10 +709,10 @@ $aq->eq('options@address', 'x'); // true;
 
 ### setResettable
 
-> Arguments
+> Definition
 
 ```
-setResettable(bool $resettable);
+setResettable(bool $resettable): self
 ```
 
 > Source code
