@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Rmtram\ArrayQuery\Queries;
 
-use phpDocumentor\Reflection\DocBlock\Tags\Param;
 use Rmtram\ArrayQuery\Queries\Finders\FinderInterface;
 use Rmtram\ArrayQuery\Queries\Operators\OperatorInterface;
 use Rmtram\ArrayQuery\Queries\Operators\Parameter;
@@ -23,10 +22,14 @@ class Evaluator
      */
     private $finder;
 
+    /**
+     * @var array
+     */
     private $operatorCaches = [];
 
     /**
      * Evaluator constructor.
+     *
      * @param FinderInterface $finder
      */
     public function __construct(FinderInterface $finder)
@@ -58,7 +61,7 @@ class Evaluator
         $cev = $this->evaluateAndChildren($classify, $cev, $item);
 
         // "OR" will be "OK" if even one matches.
-        return $this->evaluateOrChildren($item, $classify, $cev);
+        return $this->evaluateOrChildren($classify, $cev, $item);
     }
 
     /**
@@ -93,12 +96,12 @@ class Evaluator
             return $this->operatorCaches[$method];
         }
         $operator = $where::OPERATOR_CLASSES[$method];
-        $class = new $operator($this->finder);
-        if (!$class instanceof OperatorInterface) {
+        $instance = new $operator($this->finder);
+        if (!$instance instanceof OperatorInterface) {
             throw new \LogicException($method);
         }
-        $this->operatorCaches[$method] = $class;
-        return $class;
+        $this->operatorCaches[$method] = $instance;
+        return $instance;
     }
 
     /**
@@ -137,12 +140,12 @@ class Evaluator
     }
 
     /**
-     * @param array $item
      * @param array $classify
      * @param int $currentEvaluated
+     * @param array $item
      * @return int
      */
-    private function evaluateOrChildren(array $item, array $classify, int $currentEvaluated): int
+    private function evaluateOrChildren(array $classify, int $currentEvaluated, array $item): int
     {
         $ng = false;
         foreach ($classify[Where::LOGIC_OR] as $child) {
